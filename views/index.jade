@@ -1,0 +1,10 @@
+extends layout
+
+block content
+  p navbar up here
+  h1= R/Funny
+  p Today's topic is: some top link
+
+  form#messageForm
+    textarea(rows="4", cols="50", placeholder="What do you think?", maxlength=200)#outgoingMessage
+    input(type="button", value="Submit", disabled=true)#send
