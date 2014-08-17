@@ -1,0 +1,20 @@
+{
+  "name": "r_chat",
+  "version": "0.0.0",
+  "authors": [
+    "Oskar Niburski <oskarniburski@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "moment": "~2.8.1",
+    "bootstrap": "~3.2.0",
+    "underscore": "~1.6.0"
+  }
+}

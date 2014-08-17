@@ -39,16 +39,18 @@ $(document).on('ready', function() {
 
   socket.on('gettingMessages', function(data) {
     var messages = data.messages
-    console.log(new Date(messages[1].messageTime))
-    $('#oldmessages').html('')
-    $('#oldmessages').append('<hr>')
-    for (var i = 0; i < messages.length; i++) {
-      var date = ''
-      var dateTime = new Date(messages[i].messageTime)
-      date = date + dateTime.getDate() + '/' + (dateTime.getMonth() + 1) + '/' + dateTime.getFullYear() + ' @ ' + dateTime.getHours() + ":" + dateTime.getMinutes()
-      $('#oldmessages').append(messages[i].userName + ' said: ' + messages[i].message+ ' at '+ date + '<br />')
+    if ( !_.isEmpty(messages) ) {
+      console.log(new Date(messages[1].messageTime))
+      $('#oldmessages').html('')
+      $('#oldmessages').append('<hr>')
+      for (var i = 0; i < messages.length; i++) {
+        var date = ''
+        var dateTime = new Date(messages[i].messageTime)
+        date = date + dateTime.getDate() + '/' + (dateTime.getMonth() + 1) + '/' + dateTime.getFullYear() + ' @ ' + dateTime.getHours() + ":" + dateTime.getMinutes()
+        $('#oldmessages').append(messages[i].userName + ' said: ' + messages[i].message+ ' at '+ date + '<br />')
+      }
+      $('#oldmessages').append('<p>Past Stuff</P><hr>')
     }
-    $('#oldmessages').append('<p>Past Stuff</P><hr>')
     // $('#messages')
   })
 
