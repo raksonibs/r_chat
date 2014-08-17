@@ -59,10 +59,15 @@ var userCount = 0
 //   // })
 // })
 
-User.count({online: true}, function(err, c) {
-   console.log('Count is ' + c);
-   userCount = c
-});
+function userCounting() {
+  User.count({online: true}, function(err, c) {
+     console.log('Count is ' + c);
+     userCount = c
+  });
+  return userCount
+}
+
+userCounting()
 
 // count = User.where('online').equals(true)
 // this actually isn't querying the collection of users who are online now.
@@ -96,7 +101,6 @@ passport.use(new RedditStrategy({
             redditId: profile.id,
             provider: 'reddit',
             online: true,
-            //now in the future searching on User.findOne({'reddit.id': profile.id } will match because of this next line
             reddit: profile._json
           });
           user.save(function(err) {
@@ -156,19 +160,21 @@ app.get('/auth/reddit/callback', function(req, res, next){
 app.get('/logout', function(req, res) {
  if ( req.user !== undefined ) {
     User.findOne({
-      redditId: req.user.id },
+      redditId: req.user.redditId },
       function(err, user) {
          if (err) {
           res.redirect('/')
         }
-        user.online = true
+        user.online = false
         user.save(function(err) {
           if (err) { return next(err)}
         })
       })
+    userCount = userCounting()
     req.logout()
     res.render('index', {user: req.user, onlineNow: userCount})
   } else {
+    userCount = userCounting()
     req.logout()
     res.render('index', {onlineNow: userCount})
   }
@@ -190,9 +196,9 @@ var routes = require('./routes/index');
 app.get('/', function(req,res) {
   if ( req.user !== undefined ) {
     User.findOne({
-      redditId: req.user.id },
+      redditId: req.user.redditId },
       function(err, user) {
-         if (err) {
+        if (err) {
           res.redirect('/')
         }
         user.online = true
@@ -200,8 +206,10 @@ app.get('/', function(req,res) {
           if (err) { return next(err)}
         })
       })
+    userCount = userCounting()
     res.render('index', {user: req.user, onlineNow: userCount})
   } else {
+    userCount = userCounting()
     res.render('index', {onlineNow: userCount})
   }
 })
