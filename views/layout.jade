@@ -11,6 +11,7 @@ html
     //-   input(type='text', name='username')
     //-   input(type='password', name='password')
     //-   input(type='submit', class='btn', value='Submit')
+    p #{onlineNow}
     if user
       a(href='/logout') Logout #{user.name}
     else

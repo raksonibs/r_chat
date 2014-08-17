@@ -8,13 +8,14 @@ var _ = require('underscore');
 var cookieSession = require('cookie-session')
 var session = require('express-session');
 var mongoose = require('mongoose');
-flash = require('connect-flash')
-mongoose.connect('mongodb://@localhost/MyDatabase');
+var flash = require('connect-flash');
+var db = mongoose.connect('mongodb://@localhost/MyDatabase');
 
 var Schema = mongoose.Schema;
 var UserSchema = new Schema({
       name: String,
       redditId: String,
+      online: Boolean,
     }, {
       collection: 'users'
     });
@@ -49,6 +50,23 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash())
 
+var userCount = 0
+
+// User.find({online: true}, function(err, users) {
+//   // User.count({}, function( err, count) {
+//   //    console.log( "userCount of users:", count );
+//   //    userCount = count
+//   // })
+// })
+
+User.count({online: true}, function(err, c) {
+   console.log('Count is ' + c);
+   userCount = c
+});
+
+// count = User.where('online').equals(true)
+// this actually isn't querying the collection of users who are online now.
+
 var REDDIT_CONSUMER_KEY = "l1XvvzL9PfQ4eA";
 var REDDIT_CONSUMER_SECRET = "bkIGUIIWywbsa028C3RxNOR6YC0";
 
@@ -73,25 +91,26 @@ passport.use(new RedditStrategy({
           return done(err, user);
         }
         if (!user) {
-                user = new User({
-                    name: profile._json.name,
-                    redditId: profile.id,
-                    provider: 'reddit',
-                    //now in the future searching on User.findOne({'reddit.id': profile.id } will match because of this next line
-                    reddit: profile._json
-                });
-                user.save(function(err) {
-                    if (err) console.log(err);
-                    return done(err, user);
-                });
-                console.log(user)
-                return done(err, user)
-            } else {
-                //found user. Return
-                console.log(user)
-                return done(err, user);
-            }
-        });
+          user = new User({
+            name: profile._json.name,
+            redditId: profile.id,
+            provider: 'reddit',
+            online: true,
+            //now in the future searching on User.findOne({'reddit.id': profile.id } will match because of this next line
+            reddit: profile._json
+          });
+          user.save(function(err) {
+            if (err) console.log(err);
+            return done(err, user);
+          });
+          console.log(user)
+          return done(err, user)
+        } else {
+          //found user. Return
+          console.log(user)
+          return done(err, user);
+        }
+      });
     }
 ));
 
@@ -123,7 +142,7 @@ app.get('/auth/reddit', function(req, res, next){
 
 app.get('/auth/reddit/callback', function(req, res, next){
   // Check for origin via state token
-  if (req.query.state == req.session.state){
+  if (req.query.state == req.session.state) {
     passport.authenticate('reddit', {
       successRedirect: '/',
       failureRedirect: '/login'
@@ -134,9 +153,25 @@ app.get('/auth/reddit/callback', function(req, res, next){
   }
 });
 
-app.get('/logout', function(req, res){
-  req.logout();
-  res.redirect('/');
+app.get('/logout', function(req, res) {
+ if ( req.user !== undefined ) {
+    User.findOne({
+      redditId: req.user.id },
+      function(err, user) {
+         if (err) {
+          res.redirect('/')
+        }
+        user.online = true
+        user.save(function(err) {
+          if (err) { return next(err)}
+        })
+      })
+    req.logout()
+    res.render('index', {user: req.user, onlineNow: userCount})
+  } else {
+    req.logout()
+    res.render('index', {onlineNow: userCount})
+  }
 });
 
 function ensureAuthenticated(req, res, next) {
@@ -153,7 +188,22 @@ function ensureAuthenticated(req, res, next) {
 var routes = require('./routes/index');
 
 app.get('/', function(req,res) {
-  res.render('index', {user: req.user})
+  if ( req.user !== undefined ) {
+    User.findOne({
+      redditId: req.user.id },
+      function(err, user) {
+         if (err) {
+          res.redirect('/')
+        }
+        user.online = true
+        user.save(function(err) {
+          if (err) { return next(err)}
+        })
+      })
+    res.render('index', {user: req.user, onlineNow: userCount})
+  } else {
+    res.render('index', {onlineNow: userCount})
+  }
 })
 
 /// catch 404 and forwarding to error handler
