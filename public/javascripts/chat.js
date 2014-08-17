@@ -11,8 +11,8 @@ $(document).on('ready', function() {
   });
 
   function sendMessage() {
-    var outgoingMessage = $('#message_field').val()
-    $.ajax(function() {
+    var outgoingMessage = $('#outgoingMessage').val()
+    $.ajax({
       url:  '/message',
       type: 'POST',
       contentType: 'application/json',
@@ -20,6 +20,13 @@ $(document).on('ready', function() {
       data: JSON.stringify({message: outgoingMessage})
     })
   }
+
+  $('#send').on('click', sendMessage)
+
+  socket.on('incomingMessage', function(data) {
+    var message = data.message
+    $("#messages").prepend(message+'<br/ >')
+  })
 
 
 })

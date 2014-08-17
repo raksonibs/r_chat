@@ -7,4 +7,9 @@ html
     script(src='/socket.io/socket.io.js')
     script(src='/javascripts/chat.js')
   body
+    //- form(action='/auth/reddit', method='get')
+    //-   input(type='text', name='username')
+    //-   input(type='password', name='password')
+    //-   input(type='submit', class='btn', value='Submit')
+    a(href="/auth/reddit") Login with Reddit
     block content
