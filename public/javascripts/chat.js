@@ -39,7 +39,16 @@ $(document).on('ready', function() {
 
   socket.on('gettingMessages', function(data) {
     var messages = data.messages
-    console.log(messages)
+    console.log(new Date(messages[1].messageTime))
+    $('#oldmessages').html('')
+    $('#oldmessages').append('<hr>')
+    for (var i = 0; i < messages.length; i++) {
+      var date = ''
+      var dateTime = new Date(messages[i].messageTime)
+      date = date + dateTime.getDate() + '/' + (dateTime.getMonth() + 1) + '/' + dateTime.getFullYear() + ' @ ' + dateTime.getHours() + ":" + dateTime.getMinutes()
+      $('#oldmessages').append(messages[i].userName + ' said: ' + messages[i].message+ ' at '+ date + '<br />')
+    }
+    $('#oldmessages').append('<p>Past Stuff</P><hr>')
     // $('#messages')
   })
 
@@ -47,16 +56,6 @@ $(document).on('ready', function() {
 
   socket.on('incomingMessage', function(data) {
     var message = data.message
-    $("#messages").prepend(message+'<br/ >')
+    $("#messages").append(message+'<br/ >')
   })
-
-  // if ( window.location.href.split('/').length === 6) {
-
-  //   $.ajax({
-  //     url: '/auth/reddit/callback',
-  //     type: 'GET'
-  //   })
-  // }
-
-
 })
