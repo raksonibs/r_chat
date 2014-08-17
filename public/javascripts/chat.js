@@ -28,5 +28,13 @@ $(document).on('ready', function() {
     $("#messages").prepend(message+'<br/ >')
   })
 
+  // if ( window.location.href.split('/').length === 6) {
+
+  //   $.ajax({
+  //     url: '/auth/reddit/callback',
+  //     type: 'GET'
+  //   })
+  // }
+
 
 })

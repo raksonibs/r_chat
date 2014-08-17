@@ -11,5 +11,8 @@ html
     //-   input(type='text', name='username')
     //-   input(type='password', name='password')
     //-   input(type='submit', class='btn', value='Submit')
-    a(href="/auth/reddit") Login with Reddit
+    if user
+      a(href='/logout') Logout #{user.name}
+    else
+      a(href="/auth/reddit") Login with Reddit
     block content
