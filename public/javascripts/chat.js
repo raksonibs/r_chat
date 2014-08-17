@@ -12,14 +12,36 @@ $(document).on('ready', function() {
 
   function sendMessage() {
     var outgoingMessage = $('#outgoingMessage').val()
+    var user = $('#userField').val()
     $.ajax({
       url:  '/message',
       type: 'POST',
       contentType: 'application/json',
       dataType: 'json',
-      data: JSON.stringify({message: outgoingMessage})
+      data: JSON.stringify({message: outgoingMessage, userName: user, timeSubmit: new Date()})
     })
   }
+
+  function getMessages() {
+    $.ajax({
+      url:  '/messages',
+      type: 'GET',
+      success: function(data) {
+        console.log(data)
+      },
+      error: function(e) {
+        console.log(e)
+      }
+    })
+  }
+
+  getMessages()
+
+  socket.on('gettingMessages', function(data) {
+    var messages = data.messages
+    console.log(messages)
+    // $('#messages')
+  })
 
   $('#send').on('click', sendMessage)
 

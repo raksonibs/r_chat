@@ -11,6 +11,8 @@ var mongoose = require('mongoose');
 var flash = require('connect-flash');
 var db = mongoose.connect('mongodb://@localhost/MyDatabase');
 
+var messages = [];
+
 var Schema = mongoose.Schema;
 var UserSchema = new Schema({
       name: String,
@@ -118,8 +120,15 @@ passport.use(new RedditStrategy({
     }
 ));
 
+app.get('/messages', function(req, res) {
+  io.sockets.emit('gettingMessages', {messages: messages})
+  res.json(200, {messages: 'sent'})
+})
+
 app.post('/message', function(req, res) {
   var message = req.body.message;
+  var userName = req.body.userName
+  var messageTime = req.body.timeSubmit
 
   console.log('working over here with message')
   if(_.isUndefined(message) || _.isEmpty(message.trim())) {
@@ -131,7 +140,10 @@ app.post('/message', function(req, res) {
 
   console.log('working over here')
 
-  io.sockets.emit('incomingMessage', {message: message})
+  io.sockets.emit('incomingMessage', {message: message, userName: userName, messageTime: messageTime})
+  messages.push({message: message, userName: userName, messageTime: messageTime})
+  // message should be  sorted by time, where most recent is last
+  // ex: [{user: 'raksonibs', time: Date.time.whenever+1, message: 'daadsasd'}]
 
   res.json(200, {message: 'recieved'})
 })
