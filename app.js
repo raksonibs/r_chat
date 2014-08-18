@@ -10,6 +10,8 @@ var session = require('express-session');
 var mongoose = require('mongoose');
 var flash = require('connect-flash');
 var db = mongoose.connect('mongodb://@localhost/MyDatabase');
+var fs = require('fs');
+var busboy = require('connect-busboy');
 
 var messages = [];
 
@@ -18,6 +20,7 @@ var UserSchema = new Schema({
       name: String,
       redditId: String,
       online: Boolean,
+      image: String,
     }, {
       collection: 'users'
     });
@@ -39,6 +42,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 app.use(favicon());
+app.use(busboy());
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
@@ -60,6 +64,35 @@ var userCount = 0
 //   //    userCount = count
 //   // })
 // })
+
+app.post('/fileupload', function(req, res) {
+    var fstream;
+    req.pipe(req.busboy);
+    req.busboy.on('file', function(fieldname, file, filename) {
+        console.log("Uploading: " + filename);
+        fstream = fs.createWriteStream(__dirname + '/public/images/' + filename);
+        file.pipe(fstream);
+        fstream.on('close', function () {
+            User.findOne({
+            redditId: req.user.redditId },
+            function(err, user) {
+              // console.log(user)
+              if (err) {
+                // console.log(err)
+                res.render('index', {user: req.user, onlineNow: userCount})
+              }
+              var image = ('/images/' + filename).toString()
+              user.image = '/images/IMG_0613.jpg'
+              console.log(image)
+              // user.save(function(err) {
+              //   // console.log(err)
+              //   // if (err) { return next(err)}
+              // })
+            })
+            res.render('index', {user: req.user, onlineNow: userCount})
+        });
+    });
+});
 
 function userCounting() {
   User.count({online: true}, function(err, c) {
@@ -103,6 +136,7 @@ passport.use(new RedditStrategy({
             redditId: profile.id,
             provider: 'reddit',
             online: true,
+            image: '/images/reddit-black.png',
             reddit: profile._json
           });
           user.save(function(err) {
@@ -174,13 +208,15 @@ app.get('/logout', function(req, res) {
     User.findOne({
       redditId: req.user.redditId },
       function(err, user) {
-         if (err) {
-          res.redirect('/')
+         if (user === null || err) {
+          res.render('index', {onlineNow: userCount})
         }
-        user.online = false
-        user.save(function(err) {
-          if (err) { return next(err)}
-        })
+        if (user !== null) {
+          user.online = false
+          user.save(function(err) {
+            if (err) { return next(err)}
+          })
+        }
       })
     userCount = userCounting()
     req.logout()
@@ -206,17 +242,20 @@ function ensureAuthenticated(req, res, next) {
 var routes = require('./routes/index');
 
 app.get('/', function(req,res) {
+  console.log(req.user)
   if ( req.user !== undefined ) {
     User.findOne({
       redditId: req.user.redditId },
       function(err, user) {
-        if (err) {
+        if (user === null || err) {
           res.redirect('/')
         }
-        user.online = true
-        user.save(function(err) {
-          if (err) { return next(err)}
-        })
+        if (user !== null) {
+          user.online = true
+          user.save(function(err) {
+            if (err) { return next(err)}
+          })
+        }
       })
     userCount = userCounting()
     res.render('index', {user: req.user, onlineNow: userCount})

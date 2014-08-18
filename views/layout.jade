@@ -16,6 +16,10 @@ html
     p #{onlineNow}
     if user
       a(href='/logout') Logout #{user.name}
+      img(class="smaller" src="#{user.image}")
+      form(name="uploader", action="/fileupload", method="post", enctype="multipart/form-data")
+        input(type="file", name="file", id="file")
+        input(type="submit", value="Upload")
     else
       a(href="/auth/reddit") Login with Reddit
     block content
