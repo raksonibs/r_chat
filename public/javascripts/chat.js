@@ -58,6 +58,9 @@ $(document).on('ready', function() {
 
   socket.on('incomingMessage', function(data) {
     var message = data.message
-    $("#messages").append(message+'<br/ >')
+    var dateTime = new Date(data.messageTime)
+    var timeArray = [dateTime.getFullYear(), dateTime.getMonth(), dateTime.getDate(), dateTime.getHours(), dateTime.getMinutes()]
+    var timeAgo = moment(timeArray).fromNow()
+    $("#messages").append(data.userName + ': ' + '<br />' + message + ' (' + timeAgo + ')' +'<br/ >')
   })
 })
