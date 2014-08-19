@@ -18,6 +18,16 @@ a {
   float: left;
 }
 
+.user-name {
+  margin-top: 7px;
+  font-size: 3em;
+  margin-bottom: 0;
+}
+
+.user-message {
+  font-size: 2em;
+}
+
 .clear {
   clear: both;
 }

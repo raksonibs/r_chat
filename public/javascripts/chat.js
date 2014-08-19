@@ -14,6 +14,7 @@ $(document).on('ready', function() {
     var outgoingMessage = $('#outgoingMessage').val();
     var user = $('#userField').val();
     var userImage = $('#userImage').val();
+    $('#outgoingMessage').val('');
     $.ajax({
       url:  '/message',
       type: 'POST',
