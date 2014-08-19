@@ -163,6 +163,7 @@ app.post('/message', function(req, res) {
   var message = req.body.message;
   var userName = req.body.userName
   var messageTime = req.body.timeSubmit
+  var messageImage = req.body.image
 
   console.log('working over here with message')
   if(_.isUndefined(message) || _.isEmpty(message.trim())) {
@@ -174,7 +175,7 @@ app.post('/message', function(req, res) {
 
   console.log('working over here')
 
-  io.sockets.emit('incomingMessage', {message: message, userName: userName, messageTime: messageTime})
+  io.sockets.emit('incomingMessage', {message: message, userName: userName, messageTime: messageTime, messageImage: messageImage})
   messages.push({message: message, userName: userName, messageTime: messageTime})
   // message should be  sorted by time, where most recent is last
   // ex: [{user: 'raksonibs', time: Date.time.whenever+1, message: 'daadsasd'}]

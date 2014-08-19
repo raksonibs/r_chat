@@ -11,3 +11,13 @@ a {
   width: 150px;
   height: 150px;
 }
+
+.message-image,
+.message-content {
+  display: inline;
+  float: left;
+}
+
+.clear {
+  clear: both;
+}

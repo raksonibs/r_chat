@@ -8,9 +8,11 @@ block content
   div#oldmessages
   div#messages
   if user
+    div.clear
     form#messageForm
       textarea(rows="4", cols="50", placeholder="What do you think?", maxlength=200)#outgoingMessage
       input(type="hidden" value="#{user.name}")#userField
+      input(type="hidden" value="#{user.image}")#userImage
       input(type="button", value="Submit", style="width: 100px; height: 100px;")#send
   else
     p Sign in with your reddit account to join in on the conversation
