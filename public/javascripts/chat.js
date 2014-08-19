@@ -37,6 +37,28 @@ $(document).on('ready', function() {
     })
   }
 
+  // each of these ten will be a room. it will update every day. (eventually will want to update each three hours)
+
+  $.getJSON(
+    "http://www.reddit.com/.json?jsonp=?",
+    function foo(data)
+    {
+      $.each(
+        data.data.children.slice(0, 10),
+        function (i, post) {
+          $("#reddit-content").append( '<br>' + post.data.title );
+          $("#reddit-content").append( '<br>' + post.data.url );
+          $("#reddit-content").append( '<br>' + post.data.permalink );
+          $("#reddit-content").append( '<br>' + post.data.ups );
+          $("#reddit-content").append( '<br>' + post.data.downs );
+          $("#reddit-content").append( '<hr>' );
+
+        }
+      )
+    }
+  )
+  .success(function() { console.log("second success"); })
+
   getMessages()
 
   socket.on('gettingMessages', function(data) {
