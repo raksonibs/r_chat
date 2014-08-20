@@ -14,6 +14,7 @@ var fs = require('fs');
 var busboy = require('connect-busboy');
 
 var messages = [];
+var rooms = ['first,room', 'second,room'];
 
 var Schema = mongoose.Schema;
 var UserSchema = new Schema({
@@ -55,6 +56,9 @@ app.use(cookieSession({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash())
+
+app.locals._      = require('underscore');
+app.locals._.str = require('underscore.string');
 
 var userCount = 0
 
@@ -155,8 +159,22 @@ passport.use(new RedditStrategy({
 ));
 
 app.get('/messages', function(req, res) {
-  io.sockets.emit('gettingMessages', {messages: messages})
+  var room = req.body.room
+  io.sockets.in(room).emit('gettingMessages', {messages: messages})
   res.json(200, {messages: 'sent'})
+})
+
+io.sockets.on('connection', function(socket) {
+  console.log('room 1st level')
+  socket.on('room', function(room) {
+    console.log('room 2nd level reached')
+    if(socket.room) {
+      socket.leave(socket.room);
+    }
+
+    socket.room = room;
+    socket.join(room);
+  })
 })
 
 app.post('/message', function(req, res) {
@@ -164,18 +182,15 @@ app.post('/message', function(req, res) {
   var userName = req.body.userName
   var messageTime = req.body.timeSubmit
   var messageImage = req.body.image
+  var room = req.body.room
 
-  console.log('working over here with message')
   if(_.isUndefined(message) || _.isEmpty(message.trim())) {
     return res.json(400, {error: "invalid message"})
   }
 
-  // this below can be problematic. it should not be to all sockets emit this message,
-  // but instead only some of them
-
   console.log('working over here')
 
-  io.sockets.emit('incomingMessage', {message: message, userName: userName, messageTime: messageTime, messageImage: messageImage})
+  io.sockets.in(room).emit('incomingMessage', {message: message, userName: userName, messageTime: messageTime, messageImage: messageImage})
   messages.push({message: message, userName: userName, messageTime: messageTime})
   // message should be  sorted by time, where most recent is last
   // ex: [{user: 'raksonibs', time: Date.time.whenever+1, message: 'daadsasd'}]
@@ -242,6 +257,11 @@ function ensureAuthenticated(req, res, next) {
 
 var routes = require('./routes/index');
 
+app.get('/rooms/:room_id', function(req,res) {
+  var room = req.params.room_id
+  res.render('room', {user: req.user, onlineNow: userCount, rooms: rooms, room: room})
+})
+
 app.get('/', function(req,res) {
   console.log(req.user)
   if ( req.user !== undefined ) {
@@ -259,10 +279,10 @@ app.get('/', function(req,res) {
         }
       })
     userCount = userCounting()
-    res.render('index', {user: req.user, onlineNow: userCount})
+    res.render('index', {user: req.user, onlineNow: userCount, rooms: rooms})
   } else {
     userCount = userCounting()
-    res.render('index', {onlineNow: userCount})
+    res.render('index', {onlineNow: userCount, rooms: rooms})
   }
 })
 

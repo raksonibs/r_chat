@@ -2,18 +2,10 @@ extends layout
 
 block content
   p navbar up here
-  h1 R/Funny
-  p Today's topic is: some top link
+  div#room-name
+  div#rooms
+  - for (var i = 0; i < rooms.length; i++) {
+    a(href="/rooms/#{rooms[i]}" class="room_name" id="#{_.str.words(rooms[i]).join()}")= rooms[i]
+    br
+  - }
 
-  div#oldmessages
-  div#messages
-  div#reddit-content
-  if user
-    div.clear
-    form#messageForm
-      textarea(rows="4", cols="50", placeholder="What do you think?", maxlength=200)#outgoingMessage
-      input(type="hidden" value="#{user.name}")#userField
-      input(type="hidden" value="#{user.image}")#userImage
-      input(type="button", value="Submit", style="width: 100px; height: 100px;")#send
-  else
-    p Sign in with your reddit account to join in on the conversation

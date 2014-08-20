@@ -5,29 +5,42 @@ $(document).on('ready', function() {
   var socket = io.connect(serverUrl);
   var sessionId = '';
 
+  $('.room_name').click(function() {
+    var room = $(this).attr('id');
+    console.log(room)
+
+    alert(room)
+    socket.emit('room', room)
+  })
+
   socket.on('connect', function() {
     sessionId = socket.io.engine.id
-    socket.emit('newUser', {id: sessionId, name: 'Oskar'});
+    socket.emit('newUser', {id: sessionId, name: 'new User'})
   });
 
   function sendMessage() {
     var outgoingMessage = $('#outgoingMessage').val();
     var user = $('#userField').val();
     var userImage = $('#userImage').val();
+    var room = $('room-name').text()
     $('#outgoingMessage').val('');
     $.ajax({
       url:  '/message',
       type: 'POST',
       contentType: 'application/json',
       dataType: 'json',
-      data: JSON.stringify({image: userImage, message: outgoingMessage, userName: user, timeSubmit: new Date()})
+      data: JSON.stringify({image: userImage, message: outgoingMessage, userName: user, timeSubmit: new Date(), room: room})
     })
   }
 
   function getMessages() {
+    var room = $('room-name').text()
     $.ajax({
       url:  '/messages',
       type: 'GET',
+      contentType: 'application/json',
+      dataType: 'json',
+      data: JSON.stringify({room: room}),
       success: function(data) {
         console.log(data)
       },
@@ -38,26 +51,26 @@ $(document).on('ready', function() {
   }
 
   // each of these ten will be a room. it will update every day. (eventually will want to update each three hours)
+  // basically each of these will have to be a room, ten rooms, top ten posts. would be better if subreddit maybe?
+  // $.getJSON(
+  //   "http://www.reddit.com/.json?jsonp=?",
+  //   function foo(data)
+  //   {
+  //     $.each(
+  //       data.data.children.slice(0, 3),
+  //       function (i, post) {
+  //         $("#rooms").append( '<br>' + post.data.title );
+  //         $("#rooms").append( '<br>' + post.data.url );
+  //         $("#rooms").append( '<br>' + post.data.permalink );
+  //         $("#rooms").append( '<br>' + post.data.ups );
+  //         $("#rooms").append( '<br>' + post.data.downs );
+  //         $("#rooms").append( '<hr>' );
 
-  $.getJSON(
-    "http://www.reddit.com/.json?jsonp=?",
-    function foo(data)
-    {
-      $.each(
-        data.data.children.slice(0, 10),
-        function (i, post) {
-          $("#reddit-content").append( '<br>' + post.data.title );
-          $("#reddit-content").append( '<br>' + post.data.url );
-          $("#reddit-content").append( '<br>' + post.data.permalink );
-          $("#reddit-content").append( '<br>' + post.data.ups );
-          $("#reddit-content").append( '<br>' + post.data.downs );
-          $("#reddit-content").append( '<hr>' );
-
-        }
-      )
-    }
-  )
-  .success(function() { console.log("second success"); })
+  //       }
+  //     )
+  //   }
+  // )
+  // .success(function() { console.log("second success"); })
 
   getMessages()
 
