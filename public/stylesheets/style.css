@@ -31,3 +31,7 @@ a {
 .clear {
   clear: both;
 }
+
+.invisible {
+  display: none;
+}

@@ -19,6 +19,7 @@ html
     //-   input(type='password', name='password')
     //-   input(type='submit', class='btn', value='Submit')
     p #{onlineNow}
+    .invisible(data-run='#{need_rooms}')
     if user
       a(href='/logout') Logout #{user.name}
       img(class="smaller" src="#{user.image}")

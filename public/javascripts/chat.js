@@ -50,6 +50,35 @@ $(document).on('ready', function() {
     })
   }
 
+  function makeRooms() {
+    if ( $('.invisible').data('run') === true ) {
+      console.log('should make rooms')
+      $.getJSON(
+    "http://www.reddit.com/.json?jsonp=?",
+    function foo(data)
+    {
+      $.each(
+        data.data.children.slice(0, 2),
+        function (i, post) {
+          $("#rooms").append( '<br>' + '<a href="/rooms/' + post.data.title.split(" ").join() + '" class="room_name" id="' + post.data.title.split(" ").join() + '">' + post.data.title + '</a>' );
+          $("#rooms").append( '<br>' + post.data.url );
+          $("#rooms").append( '<br>' + post.data.permalink );
+          $("#rooms").append( '<br>' + post.data.ups );
+          $("#rooms").append( '<br>' + post.data.downs );
+          $("#rooms").append( '<hr>' );
+
+        }
+      )
+    }
+  )
+  .success(function() { })
+      // need to retrieve the top posts, and then make a room with their name by
+      // by pushing to room array in backend that holds all the rooms
+    }
+  }
+
+  makeRooms()
+
   // each of these ten will be a room. it will update every day. (eventually will want to update each three hours)
   // basically each of these will have to be a room, ten rooms, top ten posts. would be better if subreddit maybe?
   // $.getJSON(

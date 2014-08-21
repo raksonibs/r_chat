@@ -14,7 +14,6 @@ var fs = require('fs');
 var busboy = require('connect-busboy');
 
 var messages = {};
-var rooms = ['first,room', 'second,room'];
 
 var Schema = mongoose.Schema;
 var UserSchema = new Schema({
@@ -59,6 +58,8 @@ app.use(flash())
 
 app.locals._ = require('underscore');
 app.locals._.str = require('underscore.string');
+app.locals.date_today = new Date().getHours();
+app.locals.need_rooms = true;
 
 var userCount = 0
 
@@ -231,7 +232,7 @@ var routes = require('./routes/index');
 
 app.get('/rooms/:room_id', function(req,res) {
   var room = req.params.room_id
-  res.render('room', {user: req.user, onlineNow: userCount, rooms: rooms, room: room})
+  res.render('room', {user: req.user, onlineNow: userCount, room: room})
 })
 
 app.get('/', function(req,res) {
@@ -251,10 +252,10 @@ app.get('/', function(req,res) {
         }
       })
     userCount = userCounting()
-    res.render('index', {user: req.user, onlineNow: userCount, rooms: rooms})
+    res.render('index', {user: req.user, onlineNow: userCount})
   } else {
     userCount = userCounting()
-    res.render('index', {onlineNow: userCount, rooms: rooms})
+    res.render('index', {onlineNow: userCount})
   }
 })
 

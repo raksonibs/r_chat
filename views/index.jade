@@ -2,10 +2,5 @@ extends layout
 
 block content
   p navbar up here
-  div#room-name
   div#rooms
-  - for (var i = 0; i < rooms.length; i++) {
-    a(href="/rooms/#{rooms[i]}" class="room_name" id="#{_.str.words(rooms[i]).join()}")= rooms[i]
-    br
-  - }
 
