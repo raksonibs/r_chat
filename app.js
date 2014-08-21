@@ -49,7 +49,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-// stpid -> must be before passport middlewares.
+
 app.use(cookieSession({
     keys: ['secret1', 'secret2']
 }))
@@ -57,41 +57,27 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash())
 
-app.locals._      = require('underscore');
+app.locals._ = require('underscore');
 app.locals._.str = require('underscore.string');
 
 var userCount = 0
-
-// User.find({online: true}, function(err, users) {
-//   // User.count({}, function( err, count) {
-//   //    console.log( "userCount of users:", count );
-//   //    userCount = count
-//   // })
-// })
 
 app.post('/fileupload', function(req, res) {
     var fstream;
     req.pipe(req.busboy);
     req.busboy.on('file', function(fieldname, file, filename) {
-        console.log("Uploading: " + filename);
+
         fstream = fs.createWriteStream(__dirname + '/public/images/' + filename);
         file.pipe(fstream);
         fstream.on('close', function () {
             User.findOne({
             redditId: req.user.redditId },
             function(err, user) {
-              // console.log(user)
               if (err) {
-                // console.log(err)
                 res.render('index', {user: req.user, onlineNow: userCount})
               }
               var image = ('/images/' + filename).toString()
               user.image = '/images/IMG_0613.jpg'
-              console.log(image)
-              // user.save(function(err) {
-              //   // console.log(err)
-              //   // if (err) { return next(err)}
-              // })
             })
             res.render('index', {user: req.user, onlineNow: userCount})
         });
@@ -100,16 +86,13 @@ app.post('/fileupload', function(req, res) {
 
 function userCounting() {
   User.count({online: true}, function(err, c) {
-     console.log('Count is ' + c);
+
      userCount = c
   });
   return userCount
 }
 
 userCounting()
-
-// count = User.where('online').equals(true)
-// this actually isn't querying the collection of users who are online now.
 
 var REDDIT_CONSUMER_KEY = "l1XvvzL9PfQ4eA";
 var REDDIT_CONSUMER_SECRET = "bkIGUIIWywbsa028C3RxNOR6YC0";
@@ -144,14 +127,12 @@ passport.use(new RedditStrategy({
             reddit: profile._json
           });
           user.save(function(err) {
-            if (err) console.log(err);
+            if (err)
             return done(err, user);
           });
-          console.log(user)
+
           return done(err, user)
         } else {
-          //found user. Return
-          console.log(user)
           return done(err, user);
         }
       });
@@ -160,21 +141,17 @@ passport.use(new RedditStrategy({
 
 app.get('/messages', function(req, res) {
   var room = req.query.room
-  console.log('getting old messages for')
-  console.log(room)
-  // console.log(req)
   io.sockets.in(room).emit('gettingMessages', {messages: messages[room]})
   res.json(200, {messages: 'sent'})
 })
 
 io.sockets.on('connection', function(socket) {
-  console.log('room 1st level')
+
   socket.on('room', function(room) {
-    console.log('room 2nd level reached')
+
     if(socket.room) {
       socket.leave(socket.room);
     }
-    console.log(room)
 
     socket.room = room;
     socket.join(room);
@@ -192,15 +169,9 @@ app.post('/message', function(req, res) {
     return res.json(400, {error: "invalid message"})
   }
 
-  console.log('working over here')
-  console.log(room)
-
   io.sockets.in(room).emit('incomingMessage', {message: message, userName: userName, messageTime: messageTime, messageImage: messageImage})
   messages[room] = messages[room] || []
   messages[room].push({message: message, userName: userName, messageTime: messageTime})
-  // message should be  sorted by time, where most recent is last
-  // ex: [{user: 'raksonibs', time: Date.time.whenever+1, message: 'daadsasd'}]
-  console.log(messages)
 
   res.json(200, {message: 'recieved'})
 })
@@ -214,7 +185,7 @@ app.get('/auth/reddit', function(req, res, next){
 });
 
 app.get('/auth/reddit/callback', function(req, res, next){
-  // Check for origin via state token
+
   if (req.query.state == req.session.state) {
     passport.authenticate('reddit', {
       successRedirect: '/',
@@ -256,12 +227,6 @@ function ensureAuthenticated(req, res, next) {
   res.redirect('/login');
 }
 
-// io.on('connection', function(socket){
-//     socket.on('newUser', function(data) {
-//         console.log('new user joined' + data.name)
-//     })
-// })
-
 var routes = require('./routes/index');
 
 app.get('/rooms/:room_id', function(req,res) {
@@ -270,7 +235,7 @@ app.get('/rooms/:room_id', function(req,res) {
 })
 
 app.get('/', function(req,res) {
-  console.log(req.user)
+
   if ( req.user !== undefined ) {
     User.findOne({
       redditId: req.user.redditId },

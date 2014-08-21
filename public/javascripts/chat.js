@@ -7,15 +7,12 @@ $(document).on('ready', function() {
 
   $('.room_name').click(function() {
     var room = $(this).attr('id');
-    console.log(room)
     socket.emit('room', room)
   })
 
   if ( $('#room-name').length !== 0 ) {
     var room = $('#room-name').data('value');
     room = room.split(' ').join()
-
-    console.log(room)
     socket.emit('room', room)
   }
 
@@ -29,7 +26,7 @@ $(document).on('ready', function() {
     var user = $('#userField').val();
     var userImage = $('#userImage').val();
     var room = $('.room-name').text()
-    console.log(room)
+
     $('#outgoingMessage').val('');
     $.ajax({
       url:  '/message',
@@ -43,7 +40,7 @@ $(document).on('ready', function() {
   function getMessages() {
     var room = $('.room-name').text()
     room = room.split(' ').join()
-    console.log(room)
+
     $.ajax({
       url:  '/messages',
       type: 'GET',
@@ -73,7 +70,7 @@ $(document).on('ready', function() {
   //     )
   //   }
   // )
-  // .success(function() { console.log("second success"); })
+  // .success(function() { })
 
   $('.get-messages').click(function() {
     getMessages()
@@ -81,13 +78,9 @@ $(document).on('ready', function() {
 
   socket.on('gettingMessages', function(data) {
     var messages = data.messages
-    console.log(messages)
+
     if ( !_.isEmpty(messages) ) {
-      console.log(new Date(messages[1].messageTime))
-      // these old messages need some formatting, but they also need to only be old
-      // after a few hours. there is no point if someone doesn't know what is going on.
-      // either last 100 messages are saved and the rest become old, or they all take standard
-      // format. must make a decision here.
+
       $('#oldmessages').html('')
       $('#oldmessages').append('<hr>')
       for (var i = 0; i < messages.length; i++) {
@@ -98,7 +91,6 @@ $(document).on('ready', function() {
       }
       $('#oldmessages').append('<p>Past Stuff</P><hr>')
     }
-    // $('#messages')
   })
 
   $('#send').on('click', sendMessage)
@@ -109,8 +101,7 @@ $(document).on('ready', function() {
     var timeArray = [dateTime.getFullYear(), dateTime.getMonth(), dateTime.getDate(), dateTime.getHours(), dateTime.getMinutes()]
     var timeAgo = moment(timeArray).fromNow()
     var image = data.messageImage
-    console.log('hello')
-    console.log(data)
+
     $("#messages").append('<div class="message"><div class="message-image"><img class="smaller" src="'+image+'"></div>'
                           +'<div class="message-content"><p class="user-name">'+data.userName + ': </p>'
                           +'<p class="user-message">' + message + ' </p>'
