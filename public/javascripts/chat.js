@@ -8,10 +8,16 @@ $(document).on('ready', function() {
   $('.room_name').click(function() {
     var room = $(this).attr('id');
     console.log(room)
-
-    alert(room)
     socket.emit('room', room)
   })
+
+  if ( $('#room-name').length !== 0 ) {
+    var room = $('#room-name').data('value');
+    room = room.split(' ').join()
+
+    console.log(room)
+    socket.emit('room', room)
+  }
 
   socket.on('connect', function() {
     sessionId = socket.io.engine.id
@@ -22,7 +28,8 @@ $(document).on('ready', function() {
     var outgoingMessage = $('#outgoingMessage').val();
     var user = $('#userField').val();
     var userImage = $('#userImage').val();
-    var room = $('room-name').text()
+    var room = $('.room-name').text()
+    console.log(room)
     $('#outgoingMessage').val('');
     $.ajax({
       url:  '/message',
@@ -34,19 +41,15 @@ $(document).on('ready', function() {
   }
 
   function getMessages() {
-    var room = $('room-name').text()
+    var room = $('.room-name').text()
+    room = room.split(' ').join()
+    console.log(room)
     $.ajax({
       url:  '/messages',
       type: 'GET',
       contentType: 'application/json',
       dataType: 'json',
-      data: JSON.stringify({room: room}),
-      success: function(data) {
-        console.log(data)
-      },
-      error: function(e) {
-        console.log(e)
-      }
+      data: {room: room}
     })
   }
 
@@ -72,10 +75,13 @@ $(document).on('ready', function() {
   // )
   // .success(function() { console.log("second success"); })
 
-  getMessages()
+  $('.get-messages').click(function() {
+    getMessages()
+  })
 
   socket.on('gettingMessages', function(data) {
     var messages = data.messages
+    console.log(messages)
     if ( !_.isEmpty(messages) ) {
       console.log(new Date(messages[1].messageTime))
       // these old messages need some formatting, but they also need to only be old
@@ -103,6 +109,7 @@ $(document).on('ready', function() {
     var timeArray = [dateTime.getFullYear(), dateTime.getMonth(), dateTime.getDate(), dateTime.getHours(), dateTime.getMinutes()]
     var timeAgo = moment(timeArray).fromNow()
     var image = data.messageImage
+    console.log('hello')
     console.log(data)
     $("#messages").append('<div class="message"><div class="message-image"><img class="smaller" src="'+image+'"></div>'
                           +'<div class="message-content"><p class="user-name">'+data.userName + ': </p>'

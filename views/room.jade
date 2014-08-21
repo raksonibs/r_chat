@@ -1,10 +1,11 @@
 extends layout
 
 block content
+  button.get-messages Get Messages
   div#oldmessages
   div#messages
   div#reddit-content
-  div#room-name= room
+  div#room-name.room-name(data-value='#{room}')= room
   if user
     div.clear
     form#messageForm

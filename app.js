@@ -13,7 +13,7 @@ var db = mongoose.connect('mongodb://@localhost/MyDatabase');
 var fs = require('fs');
 var busboy = require('connect-busboy');
 
-var messages = [];
+var messages = {};
 var rooms = ['first,room', 'second,room'];
 
 var Schema = mongoose.Schema;
@@ -159,8 +159,11 @@ passport.use(new RedditStrategy({
 ));
 
 app.get('/messages', function(req, res) {
-  var room = req.body.room
-  io.sockets.in(room).emit('gettingMessages', {messages: messages})
+  var room = req.query.room
+  console.log('getting old messages for')
+  console.log(room)
+  // console.log(req)
+  io.sockets.in(room).emit('gettingMessages', {messages: messages[room]})
   res.json(200, {messages: 'sent'})
 })
 
@@ -171,6 +174,7 @@ io.sockets.on('connection', function(socket) {
     if(socket.room) {
       socket.leave(socket.room);
     }
+    console.log(room)
 
     socket.room = room;
     socket.join(room);
@@ -189,11 +193,14 @@ app.post('/message', function(req, res) {
   }
 
   console.log('working over here')
+  console.log(room)
 
   io.sockets.in(room).emit('incomingMessage', {message: message, userName: userName, messageTime: messageTime, messageImage: messageImage})
-  messages.push({message: message, userName: userName, messageTime: messageTime})
+  messages[room] = messages[room] || []
+  messages[room].push({message: message, userName: userName, messageTime: messageTime})
   // message should be  sorted by time, where most recent is last
   // ex: [{user: 'raksonibs', time: Date.time.whenever+1, message: 'daadsasd'}]
+  console.log(messages)
 
   res.json(200, {message: 'recieved'})
 })
