@@ -88,7 +88,7 @@ $(document).on('ready', function() {
     }
   }
 
-  makeRooms()
+  // makeRooms()
 
   $('.get-messages').click(function() {
     getMessages()

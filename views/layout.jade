@@ -9,13 +9,8 @@ html
     //- link(rel='stylesheet', href='/bower_components/bootstrap/dist/css/bootstrap-theme.css')
     //- link(rel='stylesheet', href='/bower_components/bootstrap/dist/css/bootstrap.css')
     //- link(rel='stylesheet', href='/bower_components/foundation/css/foundation.css')
-    script(src='//code.jquery.com/jquery-1.11.0.min.js')
+    //- script(src='//code.jquery.com/jquery-1.11.0.min.js')
     script(src='/socket.io/socket.io.js')
-    script(src='/javascripts/chat.js')
-    script(type='text/javascript' src='/bower_components/moment/moment.js')
-    script(src='/bower_components/bootstrap/dist/js/bootstrap.js')
-    //- script(src='/bower_components/foundation/js/foundation.js')
-    script(src='/bower_components/underscore/underscore.js')
 
   body#page-top.index
     nav.navbar.navbar-default.navbar-fixed-top
@@ -50,10 +45,30 @@ html
       //- form(name="uploader", action="/fileupload", method="post", enctype="multipart/form-data")
       //-   input(type="file", name="file", id="file")
       //-   input(type="submit", value="Upload")
-    br
-    br
-    br
-    br
-    br
-    br
+    header
+      .container
+        .row
+          .col-lg-12
+            img.img-responsive(src='/images/profile.png', alt='')
+            .intro-text
+              span.name RChat
+              hr.star-light
+              span.skills Where Redditors Continue the Conversation
     block content
+
+
+
+    script(src='/javascripts/jquery-1.11.0.js')
+    script(src='/javascripts/bootstrap.min.js')
+    script(src='http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js')
+    script(src='/javascripts/classie.js')
+    script(src='/javascripts/cbpAnimatedHeader.js')
+    script(src='/javascripts/jqBootstrapValidation.js')
+    script(src='/javascripts/contact_me.js')
+    script(src='/javascripts/freelancer.js')
+    script(src='/javascripts/chat.js')
+    script(type='text/javascript' src='/bower_components/moment/moment.js')
+    //- script(src='/bower_components/foundation/js/foundation.js')
+    script(src='/bower_components/underscore/underscore.js')
+
+
