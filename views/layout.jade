@@ -1,10 +1,13 @@
 doctype html
 html
   head
-    title= title
+    title RChat
+    link(rel='stylesheet', href='/stylesheets/freelance_style.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
-    link(rel='stylesheet', href='/bower_components/bootstrap/dist/css/bootstrap-theme.css')
-    link(rel='stylesheet', href='/bower_components/bootstrap/dist/css/bootstrap.css')
+    link(rel='stylesheet', href='/stylesheets/font-awesome.min.css')
+    link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
+    //- link(rel='stylesheet', href='/bower_components/bootstrap/dist/css/bootstrap-theme.css')
+    //- link(rel='stylesheet', href='/bower_components/bootstrap/dist/css/bootstrap.css')
     //- link(rel='stylesheet', href='/bower_components/foundation/css/foundation.css')
     script(src='//code.jquery.com/jquery-1.11.0.min.js')
     script(src='/socket.io/socket.io.js')
@@ -13,19 +16,44 @@ html
     script(src='/bower_components/bootstrap/dist/js/bootstrap.js')
     //- script(src='/bower_components/foundation/js/foundation.js')
     script(src='/bower_components/underscore/underscore.js')
-  body
-    //- form(action='/auth/reddit', method='get')
-    //-   input(type='text', name='username')
-    //-   input(type='password', name='password')
-    //-   input(type='submit', class='btn', value='Submit')
-    p #{onlineNow}
+
+  body#page-top.index
+    nav.navbar.navbar-default.navbar-fixed-top
+      div.container
+        div.navbar-header.page-scroll
+          button(type='button' data-toggle='collapse' data-target='#bs-example-navbar-collapse-1').navbar-toggle
+            span.sr-only Toggle navigation
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+          a(href='#page-top').navbar-brand RChat (# #{onlineNow} right now)
+
+        div.collapse.navbar-collapse#bs-example-navbar-collapse-1
+          ul.nav.navbar-nav.navbar-right
+            li.hidden
+              a(href='#page-top')
+            li.page-scroll
+              a(href='#chatrooms') ChatRooms
+            li.page-scroll
+              a(href='#profile') Profile
+            li.page-scroll
+              a(href='#contact') Contact
+            if user
+              li.page-scroll
+                a(href='/logout') Logout #{user.name}
+                //- img(class="smaller" src="#{user.image}")
+            else
+              li.page-scroll
+                a(href="/auth/reddit" class="login") Login with Reddit
+
     .invisible(data-run='#{need_rooms}')
-    if user
-      a(href='/logout') Logout #{user.name}
-      img(class="smaller" src="#{user.image}")
-      form(name="uploader", action="/fileupload", method="post", enctype="multipart/form-data")
-        input(type="file", name="file", id="file")
-        input(type="submit", value="Upload")
-    else
-      a(href="/auth/reddit" class="login") Login with Reddit
+      //- form(name="uploader", action="/fileupload", method="post", enctype="multipart/form-data")
+      //-   input(type="file", name="file", id="file")
+      //-   input(type="submit", value="Upload")
+    br
+    br
+    br
+    br
+    br
+    br
     block content
