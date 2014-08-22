@@ -57,18 +57,29 @@ $(document).on('ready', function() {
     "http://www.reddit.com/.json?jsonp=?",
     function foo(data)
     {
+      $('#rooms').append('<div class="row">')
       $.each(
-        data.data.children.slice(0, 2),
+        data.data.children.slice(0, 12),
         function (i, post) {
-          $("#rooms").append( '<br>' + '<a href="/rooms/' + post.data.title.split(" ").join() + '" class="room_name" id="' + post.data.title.split(" ").join() + '">' + post.data.title + '</a>' );
-          $("#rooms").append( '<br>' + post.data.url );
-          $("#rooms").append( '<br>' + post.data.permalink );
-          $("#rooms").append( '<br>' + post.data.ups );
-          $("#rooms").append( '<br>' + post.data.downs );
-          $("#rooms").append( '<hr>' );
-
+          console.log(post.data)
+          if ( post.data.thumbnail == 'self' || post.data.thumbnail == '') {
+            post.data.thumbnail = '/images/reddit-black.png'
+          }
+          $('#rooms').append(
+                              '<div class="col-sm-4 portfolio-item">'+
+                                '<a href="/rooms/' + post.data.title.split(" ").join() + '" class="room_name" id="' + post.data.title.split(" ").join() + '">' +
+                                  '<div class="caption">' +
+                                    post.data.title +
+                                    '<div class="caption-content">' +
+                                      '<i class="fa fa-search-plus fa-3x"></i>'+
+                                    '</div>'+
+                                  '</div>'+
+                                  '<img src="' + post.data.thumbnail + '" class="img-responsive chatroom-image" alt="">'+
+                                '</a>'+
+                              '</div>')
         }
       )
+    $('#rooms').append('</div>');
     }
   )
   .success(function() { })
@@ -78,28 +89,6 @@ $(document).on('ready', function() {
   }
 
   makeRooms()
-
-  // each of these ten will be a room. it will update every day. (eventually will want to update each three hours)
-  // basically each of these will have to be a room, ten rooms, top ten posts. would be better if subreddit maybe?
-  // $.getJSON(
-  //   "http://www.reddit.com/.json?jsonp=?",
-  //   function foo(data)
-  //   {
-  //     $.each(
-  //       data.data.children.slice(0, 3),
-  //       function (i, post) {
-  //         $("#rooms").append( '<br>' + post.data.title );
-  //         $("#rooms").append( '<br>' + post.data.url );
-  //         $("#rooms").append( '<br>' + post.data.permalink );
-  //         $("#rooms").append( '<br>' + post.data.ups );
-  //         $("#rooms").append( '<br>' + post.data.downs );
-  //         $("#rooms").append( '<hr>' );
-
-  //       }
-  //     )
-  //   }
-  // )
-  // .success(function() { })
 
   $('.get-messages').click(function() {
     getMessages()
