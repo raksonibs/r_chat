@@ -57,29 +57,30 @@ $(document).on('ready', function() {
     "http://www.reddit.com/.json?jsonp=?",
     function foo(data)
     {
-      $('#rooms').append('<div class="row">')
+      $('#container-rows').append('<div class="row">')
       $.each(
-        data.data.children.slice(0, 12),
+        data.data.children.slice(0, 6),
         function (i, post) {
           console.log(post.data)
           if ( post.data.thumbnail == 'self' || post.data.thumbnail == '') {
             post.data.thumbnail = '/images/reddit-black.png'
           }
-          $('#rooms').append(
-                              '<div class="col-sm-4 portfolio-item">'+
-                                '<a href="/rooms/' + post.data.title.split(" ").join() + '" class="room_name" id="' + post.data.title.split(" ").join() + '">' +
-                                  '<div class="caption">' +
-                                    post.data.title +
-                                    '<div class="caption-content">' +
-                                      '<i class="fa fa-search-plus fa-3x"></i>'+
-                                    '</div>'+
-                                  '</div>'+
-                                  '<img src="' + post.data.thumbnail + '" class="img-responsive chatroom-image" alt="">'+
-                                '</a>'+
-                              '</div>')
+          $('#container-rows').append('<div class="col-sm-4 portfolio-item"><a href="#portfolioModal'+i+'" class="portfolio-link" data-toggle="modal"><div class="caption"><div class="caption-content"><p>'+post.data.title.split(" ").join()+'</p><i class="fa fa-search-plus fa-3x"></i></div></div><img src="/images/portfolio/cabin.png" class="img-responsive" alt=""></a></div>'
+                              // '<div class="col-sm-4 portfolio-item">'+
+                              //   '<a href="/rooms/' + post.data.title.split(" ").join() + '" class="room_name" id="' + post.data.title.split(" ").join() + '">' +
+                              //     '<div class="caption">' +
+                              //       post.data.title +
+                              //       '<div class="caption-content">' +
+                              //         '<i class="fa fa-search-plus fa-3x"></i>'+
+                              //       '</div>'+
+                              //     '</div>'+
+                              //     '<img src="' + post.data.thumbnail + '" class="img-responsive chatroom-image" alt="">'+
+                              //   '</a>'+
+                              // '</div>')
+          )
         }
       )
-    $('#rooms').append('</div>');
+    $('#container-rows').append('</div>');
     }
   )
   .success(function() { })
@@ -88,7 +89,7 @@ $(document).on('ready', function() {
     }
   }
 
-  // makeRooms()
+  makeRooms()
 
   $('.get-messages').click(function() {
     getMessages()
