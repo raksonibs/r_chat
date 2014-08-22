@@ -78,6 +78,9 @@ $(document).on('ready', function() {
                               //   '</a>'+
                               // '</div>')
           )
+          $($('#portfolioModal'+i).find('h2')).text(post.data.title)
+          $($('#portfolioModal'+i).find('img')).attr('src',post.data.thumbnail)
+          $('#portfolioModal'+i).find('ul.list-inline').find('li').find('a').attr('href', post.data.url)
         }
       )
     $('#container-rows').append('</div>');
