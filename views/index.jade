@@ -7,36 +7,72 @@ block content
           .col-lg-12.text-center
             h2 ChatRooms - Should also be convos currently in? Like those are first? (since only six at a time or so (most 12), older conversations would be only availble for one day, they would go in history somewhere i think?
             hr.star-primary
+        .row
+          .col-sm-4.portfolio-item
+            a.portfolio-link(href='#portfolioModal1', data-toggle='modal')
+              .caption
+                .caption-content
+                  i.fa.fa-search-plus.fa-3x
+              img.img-responsive(src='/images/portfolio/cabin.png', alt='')
+          .col-sm-4.portfolio-item
+            a.portfolio-link(href='#portfolioModal2', data-toggle='modal')
+              .caption
+                .caption-content
+                  i.fa.fa-search-plus.fa-3x
+              img.img-responsive(src='/images/portfolio/cake.png', alt='')
+          .col-sm-4.portfolio-item
+            a.portfolio-link(href='#portfolioModal3', data-toggle='modal')
+              .caption
+                .caption-content
+                  i.fa.fa-search-plus.fa-3x
+              img.img-responsive(src='/images/portfolio/circus.png', alt='')
+          .col-sm-4.portfolio-item
+            a.portfolio-link(href='#portfolioModal4', data-toggle='modal')
+              .caption
+                .caption-content
+                  i.fa.fa-search-plus.fa-3x
+              img.img-responsive(src='/images/portfolio/game.png', alt='')
+          .col-sm-4.portfolio-item
+            a.portfolio-link(href='#portfolioModal5', data-toggle='modal')
+              .caption
+                .caption-content
+                  i.fa.fa-search-plus.fa-3x
+              img.img-responsive(src='/images/portfolio/safe.png', alt='')
+          .col-sm-4.portfolio-item
+            a.portfolio-link(href='#portfolioModal6', data-toggle='modal')
+              .caption
+                .caption-content
+                  i.fa.fa-search-plus.fa-3x
+              img.img-responsive(src='/images/portfolio/submarine.png', alt='')
     //
        About Section
     section#profile.success
       .container
         .row
           if !user
-
             .col-lg-12.text-center
               h2 This could be you!
               hr.star-light
               img.img-responsive.img-centered(src='/images/profile.png', alt='')
-          .row
-            .col-lg-4.col-lg-offset-2
-              p
-                | With your karma
-            .col-lg-4
-              p
-                | And your conversations
+            .row
+              .col-lg-4.col-lg-offset-2
+                p
+                  | With your karma
+              .col-lg-4
+                p
+                  | And your conversations
           else
             .col-lg-12.text-center
               h2= user.name
               hr.star-light
               img.img-responsive.img-centered(src='#{user.image}', alt='')
-          .row
-            .col-lg-4.col-lg-offset-2
-              p
-                | Karma the User has
-            .col-lg-4
-              p
-                | How many conversations Joined,
+            .row
+              .col-lg-4.col-lg-offset-2
+                p
+                  | Karma the User has
+              .col-lg-4
+                p
+                  | How many conversations Joined,
     //
        Contact Section
     //
