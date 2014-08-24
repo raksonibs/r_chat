@@ -5,30 +5,50 @@ block content
     .container#container-rows
         .row
           .col-lg-12.text-center
-            h2 ChatRooms
+            h2 ChatRooms - Should also be convos currently in? Like those are first? (since only six at a time or so (most 12), older conversations would be only availble for one day, they would go in history somewhere i think?
             hr.star-primary
     //
        About Section
     section#profile.success
       .container
         .row
-          .col-lg-12.text-center
-            h2 Your Profile
-            hr.star-light
-        .row
-          .col-lg-4.col-lg-offset-2
-            p
-              | Who you are
-          .col-lg-4
-            p
-              | And other stuff about you
+          if !user
+
+            .col-lg-12.text-center
+              h2 This could be you!
+              hr.star-light
+              img.img-responsive.img-centered(src='/images/profile.png', alt='')
+          .row
+            .col-lg-4.col-lg-offset-2
+              p
+                | With your karma
+            .col-lg-4
+              p
+                | And your conversations
+          else
+            .col-lg-12.text-center
+              h2= user.name
+              hr.star-light
+              img.img-responsive.img-centered(src='#{user.image}', alt='')
+          .row
+            .col-lg-4.col-lg-offset-2
+              p
+                | Karma the User has
+            .col-lg-4
+              p
+                | How many conversations Joined,
     //
        Contact Section
+    //
+      Older convos/convos you are in.
+      The home page is always going to be six convos, and you can highlight those you are in, if you have contributed.
+      However, this bottom sections will be older convos. The convos messages are saved and can be accessed via mongo.
+      your conversations will be in profile section, old rooms will be below that.
     section#contact
       .container
         .row
           .col-lg-12.text-center
-            h2 Contact Me // Or maybe something else, not sure yet. Probably not contact me.
+            h2 Contact Me // Or maybe something else, not sure yet. Probably not contact me. Probably your active rooms, or maybe private messages or data on your account
             hr.star-primary
         .row
           .col-lg-8.col-lg-offset-2
