@@ -16,6 +16,19 @@ $(document).on('ready', function() {
     socket.emit('room', room)
   }
 
+  $('div')
+    .filter(function() {
+      return this.id.match(/portfolioModal\d/)
+    })
+    .on('show.bs.modal', function (e) {
+      setTimeout(function() {
+        $('.modal-backdrop').hide();
+      })
+    })
+    .on('hidden.bs.modal', function (e) {
+      console.log('maybe show')
+    })
+
   socket.on('connect', function() {
     sessionId = socket.io.engine.id
     socket.emit('newUser', {id: sessionId, name: 'new User'})
@@ -52,7 +65,6 @@ $(document).on('ready', function() {
 
   function makeRooms() {
     if ( $('.invisible').data('run') === true ) {
-      console.log('should make rooms')
       $.getJSON(
     "http://www.reddit.com/.json?jsonp=?",
     function foo(data)
@@ -65,22 +77,11 @@ $(document).on('ready', function() {
           if ( post.data.thumbnail == 'self' || post.data.thumbnail == '') {
             post.data.thumbnail = '/images/reddit-black.png'
           }
-          $('#container-rows').append('<div class="col-sm-4 portfolio-item"><a href="#portfolioModal'+i+'" class="portfolio-link" data-toggle="modal"><div class="caption"><div class="caption-content"><p>'+post.data.title.split(" ").join()+'</p><i class="fa fa-search-plus fa-3x"></i></div></div><img src="/images/portfolio/cabin.png" class="img-responsive" alt=""></a></div>'
-                              // '<div class="col-sm-4 portfolio-item">'+
-                              //   '<a href="/rooms/' + post.data.title.split(" ").join() + '" class="room_name" id="' + post.data.title.split(" ").join() + '">' +
-                              //     '<div class="caption">' +
-                              //       post.data.title +
-                              //       '<div class="caption-content">' +
-                              //         '<i class="fa fa-search-plus fa-3x"></i>'+
-                              //       '</div>'+
-                              //     '</div>'+
-                              //     '<img src="' + post.data.thumbnail + '" class="img-responsive chatroom-image" alt="">'+
-                              //   '</a>'+
-                              // '</div>')
+          $('#container-rows').append('<div class="col-sm-4 portfolio-item"><a href="#portfolioModal'+(i+1)+'" class="portfolio-link" data-toggle="modal"><div class="caption"><div class="caption-content"><p>'+post.data.title.split(" ").join()+'</p><i class="fa fa-search-plus fa-3x"></i></div></div><img src="/images/portfolio/cabin.png" class="img-responsive" alt=""></a></div>'
           )
-          $($('#portfolioModal'+i).find('h2')).text(post.data.title)
-          $($('#portfolioModal'+i).find('img')).attr('src',post.data.thumbnail)
-          $('#portfolioModal'+i).find('ul.list-inline').find('li').find('a').attr('href', post.data.url)
+          $($('#portfolioModal'+(i+1)).find('h2')).text(post.data.title)
+          $($('#portfolioModal'+(i+1)).find('img')).attr('src',post.data.thumbnail)
+          $('#portfolioModal'+(i+1)).find('ul.list-inline').find('li').find('a').attr('href', post.data.url)
         }
       )
     $('#container-rows').append('</div>');
