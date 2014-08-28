@@ -21,8 +21,19 @@ $(document).on('ready', function() {
       return this.id.match(/portfolioModal\d/)
     })
     .on('show.bs.modal', function (e) {
+      var thisModal = this
       setTimeout(function() {
         $('.modal-backdrop').hide();
+        console.log(thisModal)
+        var roomUrl = $(document).find('a[href="#portfolioModal1"]').find('p').text()
+        var roomString = '/rooms/Because,Family,Matters'
+        $.ajax({
+          url: '/rooms/Because,Family,Matters',
+          type: 'GET',
+          success: function() {
+            window.location.hash = roomString.substring(1)
+          }
+        })
       })
     })
     .on('hidden.bs.modal', function (e) {
@@ -33,6 +44,12 @@ $(document).on('ready', function() {
     sessionId = socket.io.engine.id
     socket.emit('newUser', {id: sessionId, name: 'new User'})
   });
+
+  var user = ich.user({
+    user: 'test'
+  })
+  //now that i can haz works, we build the template of jade room into each hash for url
+  // getting data for room and passing it in the template. huzzah
 
   function sendMessage() {
     var outgoingMessage = $('#outgoingMessage').val();

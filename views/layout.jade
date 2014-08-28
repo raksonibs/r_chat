@@ -52,6 +52,12 @@ html
               span.skills Where Redditors Continue the Conversation
     block content
 
+    script(type="text/html", id="user")
+      li
+        p
+          | {{user}}
+          //- input(id="{{code}}", checked="checked", name="{{code}}", type="checkbox")
+
 
 
     script(src='/javascripts/jquery-1.11.0.js')
@@ -62,6 +68,7 @@ html
     script(src='/javascripts/jqBootstrapValidation.js')
     script(src='/javascripts/contact_me.js')
     script(src='/javascripts/freelancer.js')
+    script(src='/javascripts/ICanHaz.min.js')
     script(src='/javascripts/chat.js')
     script(type='text/javascript' src='/bower_components/moment/moment.js')
     //- script(src='/bower_components/foundation/js/foundation.js')

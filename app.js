@@ -232,6 +232,7 @@ var routes = require('./routes/index');
 
 app.get('/rooms/:room_id', function(req,res) {
   var room = req.params.room_id
+  console.log(room)
   res.render('room', {user: req.user, onlineNow: userCount, room: room})
 })
 
