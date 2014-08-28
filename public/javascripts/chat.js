@@ -1,20 +1,8 @@
-$(document).on('ready', function() {
+$(document).on('ready page:load', function() {
 
-  var serverUrl = document.domain;
-
-  var socket = io.connect(serverUrl);
-  var sessionId = '';
-
-  $('.room_name').click(function() {
-    var room = $(this).attr('id');
-    socket.emit('room', room)
+  $('.clickable').click(function() {
+    console.log('this was clicked baby this was clicked baby this was clicked baby this was clicked baby this was clicked baby this was clicked baby')
   })
-
-  if ( $('#room-name').length !== 0 ) {
-    var room = $('#room-name').data('value');
-    room = room.split(' ').join()
-    socket.emit('room', room)
-  }
 
   $('div')
     .filter(function() {
@@ -41,11 +29,9 @@ $(document).on('ready', function() {
               }
             })
 
-            $('#chat-room-specifics').html(user)
-            $('#send').on('click', function() {
-              console.log('should send messages but doesnt')
-            })
+            // maybe wrap this on ajax complete. or page load for document, not only read
 
+            $('#chat-room-specifics').html(user)
           }
         })
       })
@@ -53,42 +39,8 @@ $(document).on('ready', function() {
     .on('hidden.bs.modal', function (e) {
       console.log('maybe show')
     })
-
-  socket.on('connect', function() {
-    sessionId = socket.io.engine.id
-    socket.emit('newUser', {id: sessionId, name: 'new User'})
-  });
   //now that i can haz works, we build the template of jade room into each hash for url
   // getting data for room and passing it in the template. huzzah
-
-  function sendMessage() {
-    var outgoingMessage = $('#outgoingMessage').val();
-    var user = $('#userField').val();
-    var userImage = $('#userImage').val();
-    var room = $('.room-name').text()
-
-    $('#outgoingMessage').val('');
-    $.ajax({
-      url:  '/message',
-      type: 'POST',
-      contentType: 'application/json',
-      dataType: 'json',
-      data: JSON.stringify({image: userImage, message: outgoingMessage, userName: user, timeSubmit: new Date(), room: room})
-    })
-  }
-
-  function getMessages() {
-    var room = $('.room-name').text()
-    room = room.split(' ').join()
-
-    $.ajax({
-      url:  '/messages',
-      type: 'GET',
-      contentType: 'application/json',
-      dataType: 'json',
-      data: {room: room}
-    })
-  }
 
   function makeRooms() {
     if ( $('.invisible').data('run') === true ) {
@@ -104,7 +56,7 @@ $(document).on('ready', function() {
           if ( post.data.thumbnail == 'self' || post.data.thumbnail == '') {
             post.data.thumbnail = '/images/reddit-black.png'
           }
-          $('#container-rows').append('<div class="col-sm-4 portfolio-item"><a href="#portfolioModal'+(i+1)+'" class="portfolio-link" data-toggle="modal"><div class="caption"><div class="caption-content"><p>'+post.data.title.split(" ").join()+'</p><i class="fa fa-search-plus fa-3x"></i></div></div><img src="/images/portfolio/cabin.png" class="img-responsive" alt=""></a></div>'
+          $('#container-rows').append('<div class="col-sm-4 portfolio-item"><a id="'+post.data.title.split(" ").join()+'" href="#portfolioModal'+(i+1)+'" class="portfolio-link room_name" data-toggle="modal"><div class="caption"><div class="caption-content"><p>'+post.data.title.split(" ").join()+'</p><i class="fa fa-search-plus fa-3x"></i></div></div><img src="/images/portfolio/cabin.png" class="img-responsive" alt=""></a></div>'
           )
           $($('#portfolioModal'+(i+1)).find('h2')).text(post.data.title)
           $($('#portfolioModal'+(i+1)).find('img')).attr('src',post.data.thumbnail)
@@ -121,44 +73,81 @@ $(document).on('ready', function() {
   }
 
   makeRooms()
+})
 
-  $('.get-messages').click(function() {
-    getMessages()
+//to track injected html
+
+var serverUrl = document.domain;
+
+var socket = io.connect(serverUrl);
+var sessionId = '';
+
+socket.on('connect', function() {
+  sessionId = socket.io.engine.id
+  socket.emit('newUser', {id: sessionId, name: 'new User'})
+});
+
+socket.on('incomingMessage', function(data) {
+  var message = data.message
+  var dateTime = new Date(data.messageTime)
+  var timeArray = [dateTime.getFullYear(), dateTime.getMonth(), dateTime.getDate(), dateTime.getHours(), dateTime.getMinutes()]
+  var timeAgo = moment(timeArray).fromNow()
+  var image = data.messageImage
+  console.log('we want to see the message')
+
+  $("#messages").append('<div class="message"><div class="message-image"><img class="smaller" src="'+image+'"></div>'
+                        +'<div class="message-content"><p class="user-name">'+data.userName + ': </p>'
+                        +'<p class="user-message">' + message + ' </p>'
+                        +'<p class="user-time">(' + timeAgo + ')</p>' +'<br/ ></div></div><div class="clear"></div>')
+})
+
+$(document).on('click','.room_name', function() {
+  var room = $(this).attr('id');
+  console.log("should be sending room event, let's see")
+  socket.emit('room', room)
+})
+
+if ( $('#room-name').length !== 0 ) {
+  var room = $('#room-name').data('value');
+  room = room.split(' ').join()
+  socket.emit('room', room)
+}
+
+function sendMessage() {
+  var outgoingMessage = $('#outgoingMessage').val();
+  var user = $('#userField').val();
+  var userImage = $('#userImage').val();
+  var room = $('.room-name').text()
+
+  $('#outgoingMessage').val('');
+  $.ajax({
+    url:  '/message',
+    type: 'POST',
+    contentType: 'application/json',
+    dataType: 'json',
+    data: JSON.stringify({image: userImage, message: outgoingMessage, userName: user, timeSubmit: new Date(), room: room})
   })
+}
 
-  socket.on('gettingMessages', function(data) {
-    var messages = data.messages
+function getMessages() {
+  var room = $('.room-name').text()
+  room = room.split(' ').join()
 
-    if ( !_.isEmpty(messages) ) {
-
-      $('#oldmessages').html('')
-      $('#oldmessages').append('<hr>')
-      for (var i = 0; i < messages.length; i++) {
-        var date = ''
-        var dateTime = new Date(messages[i].messageTime)
-        date = date + dateTime.getDate() + '/' + (dateTime.getMonth() + 1) + '/' + dateTime.getFullYear() + ' @ ' + dateTime.getHours() + ":" + dateTime.getMinutes()
-        $('#oldmessages').append(messages[i].userName + ' said: ' + messages[i].message+ ' at '+ date + '<br />')
-      }
-      $('#oldmessages').append('<p>Past Stuff</P><hr>')
-    }
+  $.ajax({
+    url:  '/messages',
+    type: 'GET',
+    contentType: 'application/json',
+    dataType: 'json',
+    data: {room: room}
   })
+}
 
-  $('#send').on('click', function() {
-    console.log('should send but does not register?')
-  })
+$(document).on('click', '#send', function() {
+  sendMessage()
+})
 
-  socket.on('incomingMessage', function(data) {
-    var message = data.message
-    var dateTime = new Date(data.messageTime)
-    var timeArray = [dateTime.getFullYear(), dateTime.getMonth(), dateTime.getDate(), dateTime.getHours(), dateTime.getMinutes()]
-    var timeAgo = moment(timeArray).fromNow()
-    var image = data.messageImage
-
-    $("#messages").append('<div class="message"><div class="message-image"><img class="smaller" src="'+image+'"></div>'
-                          +'<div class="message-content"><p class="user-name">'+data.userName + ': </p>'
-                          +'<p class="user-message">' + message + ' </p>'
-                          +'<p class="user-time">(' + timeAgo + ')</p>' +'<br/ ></div></div><div class="clear"></div>')
-  })
+$(document).on('click', '.get-messages', function() {
+  getMessages()
 })
 
 
