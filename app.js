@@ -233,7 +233,8 @@ var routes = require('./routes/index');
 app.get('/rooms/:room_id', function(req,res) {
   var room = req.params.room_id
   console.log(room)
-  res.render('room', {user: req.user, onlineNow: userCount, room: room})
+  //note: res.render renders the html so can just put there if want
+  res.json(200, {user: req.user, onlineNow: userCount, room: room, messages: messages[room]})
 })
 
 app.get('/', function(req,res) {

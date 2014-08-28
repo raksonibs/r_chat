@@ -30,8 +30,22 @@ $(document).on('ready', function() {
         $.ajax({
           url: '/rooms/Because,Family,Matters',
           type: 'GET',
-          success: function() {
+          success: function(data) {
+            console.log(data)
             window.location.hash = roomString.substring(1)
+            var user = ich.user({
+              room: data.room,
+              user: {
+                image: data.user.image,
+                name: data.user.name
+              }
+            })
+
+            $('#chat-room-specifics').html(user)
+            $('#send').on('click', function() {
+              console.log('should send messages but doesnt')
+            })
+
           }
         })
       })
@@ -44,10 +58,6 @@ $(document).on('ready', function() {
     sessionId = socket.io.engine.id
     socket.emit('newUser', {id: sessionId, name: 'new User'})
   });
-
-  var user = ich.user({
-    user: 'test'
-  })
   //now that i can haz works, we build the template of jade room into each hash for url
   // getting data for room and passing it in the template. huzzah
 
@@ -133,7 +143,9 @@ $(document).on('ready', function() {
     }
   })
 
-  $('#send').on('click', sendMessage)
+  $('#send').on('click', function() {
+    console.log('should send but does not register?')
+  })
 
   socket.on('incomingMessage', function(data) {
     var message = data.message
