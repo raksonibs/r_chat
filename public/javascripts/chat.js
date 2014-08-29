@@ -129,6 +129,23 @@ function trackSockets() {
     socket.emit('room', room)
   }
 
+  socket.on('gettingMessages', function(data) {
+    var messages = data.messages
+
+    if ( !_.isEmpty(messages) ) {
+
+      $('#oldmessages').html('')
+      $('#oldmessages').append('<hr>')
+      for (var i = 0; i < messages.length; i++) {
+        var date = ''
+        var dateTime = new Date(messages[i].messageTime)
+        date = date + dateTime.getDate() + '/' + (dateTime.getMonth() + 1) + '/' + dateTime.getFullYear() + ' @ ' + dateTime.getHours() + ":" + dateTime.getMinutes()
+        $('#oldmessages').append(messages[i].userName + ' said: ' + messages[i].message+ ' at '+ date + '<br />')
+      }
+      $('#oldmessages').append('<p>Past Stuff</P><hr>')
+    }
+  })
+
   function sendMessage() {
     var outgoingMessage = $('#outgoingMessage').val();
     var user = $('#userField').val();
@@ -144,6 +161,9 @@ function trackSockets() {
       data: JSON.stringify({image: userImage, message: outgoingMessage, userName: user, timeSubmit: new Date(), room: room})
     })
   }
+
+  //problematic when called.room-name because the room name will have multiple modals. need
+  //to account which portfolio it is.
 
   function getMessages() {
     var room = $('.room-name').text()
@@ -172,10 +192,6 @@ $(document).on('click', '.close-btn', function(){
   room = room.split(' ').join()
   socket.emit('leaveRoom', {roomName: room})
 })
-
-// the message is going to the request, but the socket isn't being registered.
-// is it in the room?
-// it is, but doesn't update on every even number click. why? what changes?
 
 trackSockets()
 
