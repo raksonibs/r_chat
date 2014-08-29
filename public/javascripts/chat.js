@@ -9,10 +9,10 @@ $(document).on('ready page:load', function() {
       setTimeout(function() {
         $('.modal-backdrop').hide();
 
-        var roomUrl = $(document).find('a[href="#portfolioModal1"]').find('p').text()
-        var roomString = '/rooms/Because,Family,Matters'
+        var roomUrl = $(document).find('a[href="#' + thisModal.id + '"]').find('p').text()
+        var roomString = '/rooms/'+roomUrl
         $.ajax({
-          url: '/rooms/Because,Family,Matters',
+          url: roomString,
           type: 'GET',
           success: function(data) {
 
@@ -25,9 +25,8 @@ $(document).on('ready page:load', function() {
               }
             })
 
-            // maybe wrap this on ajax complete. or page load for document, not only read
 
-            $('#chat-room-specifics').html(user)
+            $(thisModal).find('.chat-room-specifics').html(user)
           }
         })
       })
@@ -107,7 +106,6 @@ function trackSockets() {
     var timeAgo = moment(timeArray).fromNow()
     var image = data.messageImage
 
-    console.log(socket)
 
 
     $("#messages").append('<div class="message"><div class="message-image"><img class="smaller" src="'+image+'"></div>'
@@ -118,6 +116,7 @@ function trackSockets() {
 
   $(document).on('click','.room_name', function() {
     var room = $(this).attr('id');
+
 
     socket.emit('room', room)
   })
@@ -185,13 +184,14 @@ function trackSockets() {
   $(document).on('click', '.get-messages', function() {
     getMessages()
   })
+
+  $(document).on('click', '.close-btn', function(){
+    var room = $('#room-name').data('value');
+    room = room.split(' ').join()
+    socket.emit('leaveRoom', {roomName: room})
+  })
 }
 
-$(document).on('click', '.close-btn', function(){
-  var room = $('#room-name').data('value');
-  room = room.split(' ').join()
-  socket.emit('leaveRoom', {roomName: room})
-})
 
 trackSockets()
 

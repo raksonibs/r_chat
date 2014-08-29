@@ -156,7 +156,7 @@ io.sockets.on('connection', function(socket) {
   })
 
   socket.on('room', function(room) {
-    room = 'Because,Family,Matters'
+    room = room
     socket.join(room);
   })
 })
@@ -175,7 +175,7 @@ app.post('/message', function(req, res) {
   io.sockets.in(room).emit('incomingMessage', {message: message, userName: userName, messageTime: messageTime, messageImage: messageImage})
   messages[room] = messages[room] || []
   messages[room].push({message: message, userName: userName, messageTime: messageTime})
-
+  console.log(messages[room])
   res.json(200, {message: 'gotchya'})
 })
 
