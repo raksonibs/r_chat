@@ -144,7 +144,7 @@ passport.use(new RedditStrategy({
 
 app.get('/messages', function(req, res) {
   var room = req.query.room
-  io.sockets.in(room).emit('gettingMessages', {messages: messages[room]})
+  io.sockets.in(room).emit('gettingMessages', {room: room, messages: messages[room]})
   res.json(200, {messages: 'sent'})
 })
 
@@ -172,10 +172,9 @@ app.post('/message', function(req, res) {
     return res.json(400, {error: "invalid message"})
   }
 
-  io.sockets.in(room).emit('incomingMessage', {message: message, userName: userName, messageTime: messageTime, messageImage: messageImage})
+  io.sockets.in(room).emit('incomingMessage', {room: room, message: message, userName: userName, messageTime: messageTime, messageImage: messageImage})
   messages[room] = messages[room] || []
-  messages[room].push({message: message, userName: userName, messageTime: messageTime})
-  console.log(messages[room])
+  messages[room].push({room: room, message: message, userName: userName, messageTime: messageTime})
   res.json(200, {message: 'gotchya'})
 })
 

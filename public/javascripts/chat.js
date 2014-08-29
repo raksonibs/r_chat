@@ -108,7 +108,7 @@ function trackSockets() {
 
 
 
-    $("#messages").append('<div class="message"><div class="message-image"><img class="smaller" src="'+image+'"></div>'
+    $('.container').find('[data-name="' + data.room + '"]').find(".messages").append('<div class="message"><div class="message-image"><img class="smaller" src="'+image+'"></div>'
                           +'<div class="message-content"><p class="user-name">'+data.userName + ': </p>'
                           +'<p class="user-message">' + message + ' </p>'
                           +'<p class="user-time">(' + timeAgo + ')</p>' +'<br/ ></div></div><div class="clear"></div>')
@@ -116,42 +116,34 @@ function trackSockets() {
 
   $(document).on('click','.room_name', function() {
     var room = $(this).attr('id');
-
-
     socket.emit('room', room)
   })
 
-  if ( $('#room-name').length !== 0 ) {
-    var room = $('#room-name').data('value');
-    room = room.split(' ').join()
-
-    socket.emit('room', room)
-  }
-
   socket.on('gettingMessages', function(data) {
     var messages = data.messages
+    var oldMessages = $('.container').find('[data-name="' + data.room + '"]').find('.oldmessages')
 
     if ( !_.isEmpty(messages) ) {
 
-      $('#oldmessages').html('')
-      $('#oldmessages').append('<hr>')
+      oldMessages.html('')
+      oldMessages.append('<hr>')
       for (var i = 0; i < messages.length; i++) {
         var date = ''
         var dateTime = new Date(messages[i].messageTime)
         date = date + dateTime.getDate() + '/' + (dateTime.getMonth() + 1) + '/' + dateTime.getFullYear() + ' @ ' + dateTime.getHours() + ":" + dateTime.getMinutes()
-        $('#oldmessages').append(messages[i].userName + ' said: ' + messages[i].message+ ' at '+ date + '<br />')
+        oldMessages.append(messages[i].userName + ' said: ' + messages[i].message+ ' at '+ date + '<br />')
       }
-      $('#oldmessages').append('<p>Past Stuff</P><hr>')
+      oldMessages.append('<p>Past Stuff</P><hr>')
     }
   })
 
-  function sendMessage() {
-    var outgoingMessage = $('#outgoingMessage').val();
-    var user = $('#userField').val();
-    var userImage = $('#userImage').val();
-    var room = $('.room-name').text()
+  function sendMessage(modal) {
+    var outgoingMessage = $(modal).find('.outgoingMessage').val();
+    var user = $(modal).find('.userField').val();
+    var userImage = $(modal).find('.userImage').val();
+    var room = $(modal).find('.room-name').text()
 
-    $('#outgoingMessage').val('');
+    $('.outgoingMessage').val('');
     $.ajax({
       url:  '/message',
       type: 'POST',
@@ -164,8 +156,8 @@ function trackSockets() {
   //problematic when called.room-name because the room name will have multiple modals. need
   //to account which portfolio it is.
 
-  function getMessages() {
-    var room = $('.room-name').text()
+  function getMessages(modal) {
+    var room = $(modal).find('.room-name').text()
     room = room.split(' ').join()
 
     $.ajax({
@@ -177,16 +169,18 @@ function trackSockets() {
     })
   }
 
-  $(document).on('click', '#send', function() {
-    sendMessage()
+  $(document).on('click', '.send', function() {
+    var thisModal = $(this).closest('.portfolio-modal')
+    sendMessage(thisModal)
   })
 
   $(document).on('click', '.get-messages', function() {
-    getMessages()
+    var thisModal = $(this).closest('.portfolio-modal')
+    getMessages(thisModal)
   })
 
   $(document).on('click', '.close-btn', function(){
-    var room = $('#room-name').data('value');
+    var room = $('.room-name').data('value');
     room = room.split(' ').join()
     socket.emit('leaveRoom', {roomName: room})
   })

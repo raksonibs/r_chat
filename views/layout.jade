@@ -53,25 +53,21 @@ html
     block content
 
     script(type="text/html", id="user")
-      button.get-messages Get Messages
-      div#oldmessages
-      div#messages
-      div#reddit-content
-      div#room-name.room-name(data-value="{{room}}")
-        | {{room}}
-      if user
-        div.clear
-        form#messageForm
-          textarea(rows="4", cols="50", placeholder="What do you think?", maxlength=200)#outgoingMessage
-          input(type="hidden" value="#{user.name}")#userField
-          input(type="hidden" value="#{user.image}")#userImage
-          input(type="button", value="Submit", style="width: 100px; height: 100px;")#send
-      else
-        p Sign in with your reddit account to join in on the conversation
-
-          //- input(id="{{code}}", checked="checked", name="{{code}}", type="checkbox")
-
-
+      .container-room(data-name="{{room}}")
+        button.get-messages Get Messages
+        div.oldmessages
+        div.messages
+        div.room-name.room-name(data-value="{{room}}")
+          | {{room}}
+        if user
+          div.clear
+          form.messageForm
+            textarea(rows="4", cols="50", placeholder="What do you think?", maxlength=200).outgoingMessage
+            input(type="hidden" value="#{user.name}").userField
+            input(type="hidden" value="#{user.image}").userImage
+            input(type="button", value="Submit", style="width: 100px; height: 100px;").send
+        else
+          p Sign in with your reddit account to join in on the conversation
 
     script(src='/javascripts/jquery-1.11.0.js')
     script(src='/javascripts/bootstrap.min.js')
@@ -84,7 +80,6 @@ html
     script(src='/javascripts/ICanHaz.min.js')
     script(src='/javascripts/chat.js')
     script(type='text/javascript' src='/bower_components/moment/moment.js')
-    //- script(src='/bower_components/foundation/js/foundation.js')
     script(src='/bower_components/underscore/underscore.js')
 
 
