@@ -150,17 +150,13 @@ app.get('/messages', function(req, res) {
 
 io.sockets.on('connection', function(socket) {
 
-  mysocket = socket
+  socket.on('leaveRoom', function(roomName) {
+    var roomName = roomName.roomName
+    socket.leave()
+  })
 
   socket.on('room', function(room) {
     room = 'Because,Family,Matters'
-    if (socket.room) {
-      socket.leave(socket.room);
-    }
-
-    console.log('joining room')
-
-    socket.room = room;
     socket.join(room);
   })
 })
@@ -179,8 +175,8 @@ app.post('/message', function(req, res) {
   io.sockets.in(room).emit('incomingMessage', {message: message, userName: userName, messageTime: messageTime, messageImage: messageImage})
   messages[room] = messages[room] || []
   messages[room].push({message: message, userName: userName, messageTime: messageTime})
-  console.log(messages[room])
-  res.json(200, {message: 'recieved'})
+
+  res.json(200, {message: 'gotchya'})
 })
 
 app.get('/auth/reddit', function(req, res, next){
@@ -238,7 +234,7 @@ var routes = require('./routes/index');
 
 app.get('/rooms/:room_id', function(req,res) {
   var room = req.params.room_id
-  console.log(room)
+
   //note: res.render renders the html so can just put there if want
   res.json(200, {user: req.user, onlineNow: userCount, room: room, messages: messages[room]})
 })
