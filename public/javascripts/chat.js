@@ -1,5 +1,41 @@
 $(document).on('ready page:load', function() {
 
+  if ( $('.separate-room').length !== 0 ) {
+    var roomNameSeparate = $(this).find('.room-name').text()
+    socket.emit('room', roomNameSeparate)
+
+    socket.on('incomingMessage', function(data) {
+      var message = data.message
+      var dateTime = new Date(data.messageTime)
+      var timeArray = [dateTime.getFullYear(), dateTime.getMonth(), dateTime.getDate(), dateTime.getHours(), dateTime.getMinutes()]
+      var timeAgo = moment(timeArray).fromNow()
+      var image = data.messageImage
+
+      $('.separate-room').find(".messages").append('<div class="message"><div class="message-image"><img class="smaller" src="'+image+'"></div>'
+                            +'<div class="message-content"><p class="user-name">'+data.userName + ': </p>'
+                            +'<p class="user-message">' + message + ' </p>'
+                            +'<p class="user-time">(' + timeAgo + ')</p>' +'<br/ ></div></div><div class="clear"></div>')
+    })
+
+    socket.on('gettingMessages', function(data) {
+      var messages = data.messages
+      var oldMessages = $('.separate-room').find('.oldmessages')
+
+      if ( !_.isEmpty(messages) ) {
+
+        oldMessages.html('')
+        oldMessages.append('<hr>')
+        for (var i = 0; i < messages.length; i++) {
+          var date = ''
+          var dateTime = new Date(messages[i].messageTime)
+          date = date + dateTime.getDate() + '/' + (dateTime.getMonth() + 1) + '/' + dateTime.getFullYear() + ' @ ' + dateTime.getHours() + ":" + dateTime.getMinutes()
+          oldMessages.append(messages[i].userName + ' said: ' + messages[i].message+ ' at '+ date + '<br />')
+        }
+        oldMessages.append('<p>Past Stuff</P><hr>')
+      }
+    })
+  }
+
   $('div')
     .filter(function() {
       return this.id.match(/portfolioModal\d/)
@@ -86,12 +122,12 @@ $(document).on('ready page:load', function() {
 
 //to track injected html
 
+var serverUrl = document.domain;
+
+var socket = io.connect(serverUrl);
+var sessionId = '';
+
 function trackSockets() {
-
-  var serverUrl = document.domain;
-
-  var socket = io.connect(serverUrl);
-  var sessionId = '';
 
   socket.on('connect', function() {
     sessionId = socket.io.engine.id
@@ -105,7 +141,6 @@ function trackSockets() {
     var timeArray = [dateTime.getFullYear(), dateTime.getMonth(), dateTime.getDate(), dateTime.getHours(), dateTime.getMinutes()]
     var timeAgo = moment(timeArray).fromNow()
     var image = data.messageImage
-
 
 
     $('.container').find('[data-name="' + data.room + '"]').find(".messages").append('<div class="message"><div class="message-image"><img class="smaller" src="'+image+'"></div>'

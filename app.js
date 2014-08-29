@@ -58,6 +58,16 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash())
 
+app.use(function (req, res, next) {
+  var format = req.param('format');
+
+  if (format) {
+    req.headers.accept = 'application/' + format;
+  }
+
+  next();
+});
+
 app.locals._ = require('underscore');
 app.locals._.str = require('underscore.string');
 app.locals.date_today = new Date().getHours();
@@ -235,7 +245,16 @@ app.get('/rooms/:room_id', function(req,res) {
   var room = req.params.room_id
 
   //note: res.render renders the html so can just put there if want
-  res.json(200, {user: req.user, onlineNow: userCount, room: room, messages: messages[room]})
+  res.format({
+    json: function() {
+      res.json(200, {user: req.user, onlineNow: userCount, room: room, messages: messages[room]})
+    },
+
+    html: function() {
+      res.render('room', {user: req.user, onlineNow: userCount, room: room, messages: messages[room]})
+    }
+
+  })
 })
 
 app.get('/', function(req,res) {
