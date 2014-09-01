@@ -75,6 +75,10 @@ app.locals.need_rooms = true;
 
 var userCount = 0
 
+app.get('/contact', function(req,res) {
+  res.render('contact')
+})
+
 app.post('/fileupload', function(req, res) {
     var fstream;
     req.pipe(req.busboy);
