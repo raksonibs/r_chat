@@ -30,6 +30,11 @@ block content
               hr
               img.img-responsive.img-centered(src='#{user.image}', alt='')
             .row
+              .col-lg-12.col-lg-offset-2
+                p
+                  form(name="uploader", action="/fileupload", method="post", enctype="multipart/form-data")
+                    input(type="file", name="file", id="file")
+                    input(type="submit", value="Upload")
               .col-lg-4.col-lg-offset-2
                 p
                   | Karma the User has

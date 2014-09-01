@@ -76,46 +76,6 @@ app.locals.need_rooms = true;
 
 var userCount = 0
 
-app.get('/contact', function(req,res) {
-  res.render('contact')
-})
-
-app.get('/rooms', function(req, res) {
-  res.render('rooms', {rooms: rooms})
-})
-
-app.post('/fileupload', function(req, res) {
-    var fstream;
-    req.pipe(req.busboy);
-    req.busboy.on('file', function(fieldname, file, filename) {
-
-        fstream = fs.createWriteStream(__dirname + '/public/images/' + filename);
-        file.pipe(fstream);
-        fstream.on('close', function () {
-            User.findOne({
-            redditId: req.user.redditId },
-            function(err, user) {
-              if (err) {
-                res.render('index', {user: req.user, onlineNow: userCount})
-              }
-              var image = ('/images/' + filename).toString()
-              user.image = '/images/IMG_0613.jpg'
-            })
-            res.render('index', {user: req.user, onlineNow: userCount})
-        });
-    });
-});
-
-function userCounting() {
-  User.count({online: true}, function(err, c) {
-
-     userCount = c
-  });
-  return userCount
-}
-
-userCounting()
-
 var REDDIT_CONSUMER_KEY = "l1XvvzL9PfQ4eA";
 var REDDIT_CONSUMER_SECRET = "bkIGUIIWywbsa028C3RxNOR6YC0";
 
@@ -160,6 +120,55 @@ passport.use(new RedditStrategy({
       });
     }
 ));
+
+app.get('/contact', function(req,res) {
+  res.render('contact')
+})
+
+app.get('/rooms', function(req, res) {
+  res.render('rooms', {rooms: rooms})
+})
+
+app.post('/fileupload', function(req, res) {
+    var fstream;
+    req.pipe(req.busboy);
+    req.busboy.on('file', function(fieldname, file, filename) {
+
+        fstream = fs.createWriteStream(__dirname + '/public/images/' + filename);
+        file.pipe(fstream);
+        var userChange;
+        fstream.on('close', function () {
+            User.findOne({
+            redditId: req.user.redditId },
+            function(err, user) {
+              if (err) {
+                res.json(400, {user: req.user, onlineNow: userCount, rooms: rooms})
+              }
+              var image = '/images/' + filename
+              user.image = image
+              user.save()
+              req.session.passport.user.image = image
+              userChange = user
+              req.logout()
+              req.login(userChange.toJSON(), function(err) {
+                if (err) { return next(err) }
+                  return res.redirect('/')
+              })
+            })
+            // res.json(200, {user: req.session.passport.user, onlineNow: userCount, rooms: rooms})
+        });
+    });
+});
+
+function userCounting() {
+  User.count({online: true}, function(err, c) {
+
+     userCount = c
+  });
+  return userCount
+}
+
+userCounting()
 
 app.get('/messages', function(req, res) {
   var room = req.query.room
