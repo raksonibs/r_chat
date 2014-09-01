@@ -28,11 +28,10 @@ html
             li.page-scroll
               a(href='#profile') Profile
             li.page-scroll
-              a(href='#contact') Contact
+              a(href='#contact') Past/Current Rooms
             if user
               li.page-scroll
                 a(href='/logout') Logout #{user.name}
-                //- img(class="smaller" src="#{user.image}")
             else
               li.page-scroll
                 a(href="/auth/reddit" class="login") Login with Reddit
@@ -48,7 +47,7 @@ html
             img.img-responsive(src='/images/profile.png', alt='')
             .intro-text
               span.name RChat
-              hr.star-light
+              hr
               span.skills Where Redditors Continue the Conversation
     block content
 
@@ -57,7 +56,7 @@ html
         button.get-messages Get Messages
         div.oldmessages
         div.messages
-        div.room-name.room-name(data-value="{{room}}")
+        div.room-name.room-name.hidden(data-value="{{room}}")
           | {{room}}
         if user
           div.clear

@@ -5,8 +5,8 @@ block content
     .container#container-rows
         .row
           .col-lg-12.text-center
-            h2 ChatRooms - Should also be convos currently in? Like those are first? (since only six at a time or so (most 12), older conversations would be only availble for one day, they would go in history somewhere i think?
-            hr.star-primary
+            h2 ChatRooms
+            hr
     //
        About Section
     section#profile.success
@@ -15,7 +15,7 @@ block content
           if !user
             .col-lg-12.text-center
               h2 This could be you!
-              hr.star-light
+              hr
               img.img-responsive.img-centered(src='/images/profile.png', alt='')
             .row
               .col-lg-4.col-lg-offset-2
@@ -27,7 +27,7 @@ block content
           else
             .col-lg-12.text-center
               h2= user.name
-              hr.star-light
+              hr
               img.img-responsive.img-centered(src='#{user.image}', alt='')
             .row
               .col-lg-4.col-lg-offset-2
@@ -65,20 +65,20 @@ block content
               h3 Around the Web
               ul.list-inline
                 li
-                  a.btn-social.btn-outline(href='#')
+                  a.btn-social.btn-outline(href='/contact')
                     i.fa.fa-fw.fa-facebook
                 li
-                  a.btn-social.btn-outline(href='#')
+                  a.btn-social.btn-outline(href='/contact')
                     i.fa.fa-fw.fa-google-plus
                 li
-                  a.btn-social.btn-outline(href='#')
+                  a.btn-social.btn-outline(href='/contact')
                     i.fa.fa-fw.fa-twitter
                 li
-                  a.btn-social.btn-outline(href='#')
+                  a.btn-social.btn-outline(href='/contact')
                     i.fa.fa-fw.fa-linkedin
                 li
-                  a.btn-social.btn-outline(href='#')
-                    i.fa.fa-fw.fa-dribbble
+                  a.btn-social.btn-outline(href='/contact')
+                    i.fa.fa-fw.fa-envelope
             .footer-col.col-md-4
               h3 About RChat
               p
@@ -105,7 +105,7 @@ block content
             .col-lg-8.col-lg-offset-2
               .modal-body
                 h2 Room Title
-                hr.star-primary
+                hr
                 img.img-responsive.img-centered(src='/images/portfolio/cabin.png', alt='')
                 p
                   | Need to describe room description via post data
@@ -128,7 +128,7 @@ block content
             .col-lg-8.col-lg-offset-2
               .modal-body
                 h2 Room Title
-                hr.star-primary
+                hr
                 img.img-responsive.img-centered(src='/images/portfolio/cake.png', alt='')
                 p
                   | Need to describe room description via post data
@@ -151,7 +151,7 @@ block content
             .col-lg-8.col-lg-offset-2
               .modal-body
                 h2 Room Title
-                hr.star-primary
+                hr
                 img.img-responsive.img-centered(src='/images/portfolio/circus.png', alt='')
                 p
                   | Need to describe room description via post data
@@ -174,7 +174,7 @@ block content
             .col-lg-8.col-lg-offset-2
               .modal-body
                 h2 Room Title
-                hr.star-primary
+                hr
                 img.img-responsive.img-centered(src='/images/portfolio/game.png', alt='')
                 p
                   | Need to describe room description via post data
@@ -197,7 +197,7 @@ block content
             .col-lg-8.col-lg-offset-2
               .modal-body
                 h2 Room Title
-                hr.star-primary
+                hr
                 img.img-responsive.img-centered(src='/images/portfolio/safe.png', alt='')
                 p
                   | Need to describe room description via post data
@@ -220,7 +220,7 @@ block content
             .col-lg-8.col-lg-offset-2
               .modal-body
                 h2 Room Title
-                hr.star-primary
+                hr
                 img.img-responsive.img-centered(src='/images/portfolio/submarine.png', alt='')
                 p
                   | Need to describe room description via post data

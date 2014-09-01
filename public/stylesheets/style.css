@@ -12,6 +12,13 @@ a {
   height: 150px;
 }
 
+.send-room-page {
+  width: 100px;
+  height: 75px;
+  position: relative;
+  bottom: 32px;
+}
+
 .message-image,
 .message-content {
   display: inline;
@@ -44,4 +51,12 @@ a {
 #rooms,
 .portfolio-item {
   background-color: lightblue;
+}
+
+.room-list-listing {
+  margin: 10px;
+}
+
+.room-list-listing a {
+  width: 100%;
 }

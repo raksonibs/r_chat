@@ -14,6 +14,7 @@ var fs = require('fs');
 var busboy = require('connect-busboy');
 
 var messages = {};
+var rooms = [];
 
 var Schema = mongoose.Schema;
 var UserSchema = new Schema({
@@ -188,6 +189,7 @@ app.post('/message', function(req, res) {
 
   io.sockets.in(room).emit('incomingMessage', {room: room, message: message, userName: userName, messageTime: messageTime, messageImage: messageImage})
   messages[room] = messages[room] || []
+  rooms.push(room)
   messages[room].push({room: room, message: message, userName: userName, messageTime: messageTime})
   res.json(200, {message: 'gotchya'})
 })
@@ -278,10 +280,10 @@ app.get('/', function(req,res) {
         }
       })
     userCount = userCounting()
-    res.render('index', {user: req.user, onlineNow: userCount})
+    res.render('index', {user: req.user, onlineNow: userCount, rooms: rooms.slice(3)})
   } else {
     userCount = userCounting()
-    res.render('index', {onlineNow: userCount})
+    res.render('index', {onlineNow: userCount, rooms: rooms.slice(3)})
   }
 })
 

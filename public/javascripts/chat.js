@@ -53,6 +53,7 @@ $(document).on('ready page:load', function() {
           success: function(data) {
 
             window.location.hash = roomString.substring(1)
+
             var user = ich.user({
               room: data.room,
               user: {
@@ -116,7 +117,9 @@ $(document).on('ready page:load', function() {
       if ( post.data.thumbnail == 'self' || post.data.thumbnail == '') {
         post.data.thumbnail = '/images/reddit-black.png'
       }
-      $('#container-rows').append('<div class="col-sm-4 portfolio-item"><a id="'+post.data.title.split(" ").join()+'" href="#portfolioModal'+(i+1)+'" class="portfolio-link room_name" data-toggle="modal"><div class="caption"><div class="caption-content"><p>'+post.data.title.split(" ").join()+'</p><i class="fa fa-search-plus fa-3x"></i></div></div><img src="/images/portfolio/cabin.png" class="img-responsive" alt=""></a></div>'
+
+      imagePNG = subRedditImage()
+      $('#container-rows').append('<div class="col-sm-4 portfolio-item"><a id="'+post.data.title.split(" ").join()+'" href="#portfolioModal'+(i+1)+'" class="portfolio-link room_name" data-toggle="modal"><div class="caption"><div class="caption-content"><p>'+post.data.title+'</p><i class="fa fa-search-plus fa-3x"></i></div></div><img src="' + imagePNG + '" class="img-responsive" alt=""></a></div>'
       )
       $($('#portfolioModal'+(i+1)).find('h2')).text(post.data.title)
       $($('#portfolioModal'+(i+1)).find('img')).attr('src',post.data.thumbnail)

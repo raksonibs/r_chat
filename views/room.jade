@@ -4,9 +4,9 @@ block content
   .container.separate-room.portfolio-modal(data-name="#{room}")
     .row
       .col-lg-8.col-lg-offset-2
-        .modal-body
-          h2 Room Title
-          hr.star-primary
+        .modal-body.text-center
+          h2= room
+          hr
           img.img-responsive.img-centered(src='/images/portfolio/submarine.png', alt='')
           p
             | Need to describe room description via post data
@@ -15,14 +15,14 @@ block content
           div.oldmessages
           div.messages
           div.reddit-content
-          div.room-name.room-name(data-value='#{room}')= room
+          div.room-name.room-name.hidden(data-value='#{room}')= room
           if user
             div.clear
             form#messageForm
               textarea(rows="4", cols="50", placeholder="What do you think?", maxlength=200).outgoingMessage
               input(type="hidden" value="#{user.name}").userField
               input(type="hidden" value="#{user.image}").userImage
-              input(type="button", value="Submit", style="width: 100px; height: 100px;").send
+              input(type="button", value="Submit").send.send-room-page
           else
             p Sign in with your reddit account to join in on the conversation
           ul.list-inline.item-details
