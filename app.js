@@ -80,6 +80,10 @@ app.get('/contact', function(req,res) {
   res.render('contact')
 })
 
+app.get('/rooms', function(req, res) {
+  res.render('rooms', {rooms: rooms})
+})
+
 app.post('/fileupload', function(req, res) {
     var fstream;
     req.pipe(req.busboy);

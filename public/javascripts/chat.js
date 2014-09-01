@@ -101,6 +101,18 @@ $(document).on('ready page:load', function() {
   //   }
   // }
 
+  function scrambleAddRoom() {
+    var randomWord = '/rooms/'
+    var letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    var lengthRand = Math.random()*20 + 10
+    for (var i = 0; i < lengthRand; i++) {
+      randomWord = randomWord + ( letters[Math.floor(Math.random() * letters.length)] )
+    }
+    $('.add-room').find('a').attr('href', randomWord)
+  }
+
+  scrambleAddRoom()
+
   function subRedditImage() {
     var stringImage = '/images/portfolio/'
     var imageArray = ["alarm-clock.png", "Beer.png", "boat.png", "Boom Box.png", "Cabin.png", "cake.png", "case.png", "cashier.png", "Circus.png", "Clock.png", "cloud.png", "Coins.png", "cut.png", "Game Pad.png", "game.png", "GPS.png", "graph2.png", "graph4.png", "Guitar2.png", "Headphone.png", "lamp.png", "LCDTV.png", "Meteor.png", "newsletter.png", "package.png", "Pencil.png", "pill.png", "power.png", "recording-mic.png", "RetroTV.png", "Safe.png", "Satellite.png", "save.png", "Submarine.png", "temperature.png", "Tent.png", "tractor.png", "train.png", "UFO.png", "umbrella.png", "Vespa.png", "Wallet.png", "wooden-sign.png"]

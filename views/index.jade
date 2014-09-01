@@ -43,6 +43,15 @@ block content
             h2 Past/Current Rooms
             hr
         .row
+          .col-lg-12.text-centered.col-lg-offset-1
+            .add-your-more.text-centered
+              .col-sm-3.room-list-listing.add-room
+                a(href="/rooms/" class="btn btn-primary btn-large") Add Room
+              .col-sm-3.room-list-listing
+                a(href="/rooms/user-rooms" class="btn btn-primary btn-large") Your Rooms
+              .col-sm-3.room-list-listing
+                a(href="/rooms" class="btn btn-primary btn-large") More Rooms
+        .row
           .col-lg-10.col-lg-offset-1
             .past-rooms
               each room in rooms
