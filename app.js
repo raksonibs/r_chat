@@ -29,20 +29,9 @@ var User = mongoose.model('users', UserSchema);
 
 var app = express();
 
-if (app.get('env') == 'development') {
-  app.configure('development', function() {
-    var db = mongoose.connect('mongodb://@localhost/MyDatabase');
-  });
+if (app.get('env') == 'development' || app.get('env') == 'test') {
   var db = mongoose.connect('mongodb://@localhost/MyDatabase');
 } else {
-
-  app.configure('test', function() {
-    var db = mongoose.connect('mongodb://@localhost/MyDatabase');
-  });
-
-  app.configure('production', function() {
-    var db = mongoose.connect('mongodb://' + process.env.MONGOLAB_URI + '/MyDatabase');
-  });
   var db = mongoose.connect('mongodb://' + process.env.MONGOLAB_URI + '/MyDatabase');
 }
 
