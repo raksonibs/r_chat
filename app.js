@@ -35,7 +35,7 @@ if (app.get('env') == 'development' || app.get('env') == 'test') {
   var db = mongoose.connect('mongodb://' + process.env.MONGOLAB_URI + '/MyDatabase');
 }
 
-port = 3000;
+var port = app.listen(process.env.PORT || 3000)
 
 var passport = require('passport')
   , util = require('util')
@@ -44,7 +44,7 @@ var passport = require('passport')
 
 var mysocket = null
 
-var io = require('socket.io').listen(app.listen(port));
+var io = require('socket.io').listen(port);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
