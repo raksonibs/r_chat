@@ -103,7 +103,7 @@ if (app.get('env') == 'development' || app.get('env') == 'test') {
 passport.use(new RedditStrategy({
     clientID: REDDIT_CONSUMER_KEY,
     clientSecret: REDDIT_CONSUMER_SECRET,
-    callbackURL: callbackprod
+    callbackURL: 'http://floating-everglades-7468.herokuapp.com/auth/reddit/callback'
   },
   function(accessToken, refreshToken, profile, done) {
     User.findOne({
