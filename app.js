@@ -9,9 +9,21 @@ var cookieSession = require('cookie-session')
 var session = require('express-session');
 var mongoose = require('mongoose');
 var flash = require('connect-flash');
-var db = mongoose.connect('mongodb://@localhost/MyDatabase');
 var fs = require('fs');
 var busboy = require('connect-busboy');
+
+app.configure('development', function() {
+  var db = mongoose.connect('mongodb://@localhost/MyDatabase');
+});
+
+app.configure('test', function() {
+  var db = mongoose.connect('mongodb://@localhost/MyDatabase');
+});
+
+app.configure('production', function() {
+  var db = mongoose.connect('mongodb://' + process.env.MONGOLAB_URI + '/MyDatabase');
+});
+
 
 var messages = {};
 var rooms = [];
